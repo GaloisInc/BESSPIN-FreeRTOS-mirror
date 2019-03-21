@@ -3,10 +3,10 @@
 #define __UART_16550_H__
 
 int uart0_rxready(void);
-int uart0_rxchar(void);
-int uart0_txchar(int c);
+char uart0_rxchar(void);
+char uart0_txchar(char c);
+int uart0_rxbuffer(char *ptr, int len);
 int uart0_txbuffer(char *ptr, int len);
-void uart0_flush(void);
 void uart0_init(void);
 
 #endif
