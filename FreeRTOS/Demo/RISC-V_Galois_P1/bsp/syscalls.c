@@ -2,7 +2,7 @@
 #include <sys/stat.h>
 #include <sys/times.h>
 #include <sys/time.h>
-#include "uart_16550.h"
+#include "uart.h"
 
 void* _sbrk (int nbytes);
 int _write(int file, char *ptr, int len);
