@@ -1,4 +1,3 @@
-#include <stddef.h> // maybe not needed
 #include <stdint.h>
 #include <string.h> // for `memset`
 #include "uart.h"
