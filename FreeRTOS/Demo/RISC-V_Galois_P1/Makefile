@@ -170,7 +170,11 @@ ifeq ($(PROG),main_tcp)
 		demo/SimpleTCPEchoServer.c
 
 else
+ifeq ($(PROG),main_newuart)
+	CFLAGS += -DmainDEMO_TYPE=8
+else
 	$(info unknown demo: $(PROG))
+endif
 endif
 endif
 endif
