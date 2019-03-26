@@ -65,6 +65,8 @@ APP_SRC = \
 	bsp/plic_driver.c \
 	bsp/syscalls.c \
 	bsp/uart.c \
+	bsp/iic.c \
+	bsp/gpio.c \
 	bsp/xilinx/uartns550/xuartns550.c \
 	bsp/xilinx/uartns550/xuartns550_g.c \
 	bsp/xilinx/uartns550/xuartns550_sinit.c \
@@ -83,6 +85,13 @@ APP_SRC = \
 	bsp/xilinx/axiethernet/xaxiethernet_control.c \
 	bsp/xilinx/axiethernet/xaxiethernet_g.c \
 	bsp/xilinx/axiethernet/xaxiethernet_sinit.c \
+	bsp/xilinx/iic/xiic.c \
+	bsp/xilinx/iic/xiic_g.c \
+	bsp/xilinx/iic/xiic_sinit.c \
+	bsp/xilinx/iic/xiic_selftest.c \
+	bsp/xilinx/iic/xiic_master.c \
+	bsp/xilinx/iic/xiic_intr.c \
+	bsp/xilinx/iic/xiic_stats.c \
 	bsp/xilinx/common/xbasic_types.c \
 	bsp/xilinx/common/xil_io.c \
 	bsp/xilinx/common/xil_assert.c
