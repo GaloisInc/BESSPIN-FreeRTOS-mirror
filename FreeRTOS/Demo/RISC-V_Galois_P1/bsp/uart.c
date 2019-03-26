@@ -44,8 +44,8 @@ struct UartDriver {
 
 static uint8_t uart_rxchar(struct UartDriver* Uart);
 static uint8_t uart_txchar(struct UartDriver* Uart, uint8_t c);
-static int uart_rxbuffer(struct UartDriver* Uart, char *ptr, int len);
-static int uart_txbuffer(struct UartDriver* Uart, char *ptr, int len);
+static int uart_rxbuffer(struct UartDriver* Uart, uint8_t *ptr, int len);
+static int uart_txbuffer(struct UartDriver* Uart, uint8_t *ptr, int len);
 static void uart_init(struct UartDriver* Uart, uint8_t device_id, uint8_t plic_source_id);
 static void UartNs550StatusHandler(void *CallBackRef, u32 Event, unsigned int EventData);
 
@@ -89,7 +89,7 @@ char uart0_rxchar(void)
  * Synchronous API.
  */
 int uart0_txbuffer(char *ptr, int len) {
-  return uart_txbuffer(&Uart0, ptr, len);
+  return uart_txbuffer(&Uart0, (uint8_t *)ptr, len);
 }
 
 /**
@@ -102,7 +102,7 @@ char uart0_txchar(char c)
 
 int uart0_rxbuffer(char *ptr, int len)
 {
-  return uart_rxbuffer(&Uart0, ptr, len);
+  return uart_rxbuffer(&Uart0, (uint8_t *)ptr, len);
 }
 
 /*****************************************************************************/
@@ -145,7 +145,13 @@ static void uart_init(struct UartDriver* Uart, uint8_t device_id, uint8_t plic_s
  * waits until finished.
  */
 static uint8_t uart_rxchar(struct UartDriver* Uart) {
-  return XUartNs550_RecvByte(Uart->Device.BaseAddress);
+  #if XPAR_UART_USE_POLLING_MODE
+    return XUartNs550_RecvByte(Uart->Device.BaseAddress);
+  #else
+    uint8_t buf = 0;
+    uart_rxbuffer(Uart, &buf, 1);
+    return buf;
+  #endif
 }
 
 /**
@@ -153,15 +159,19 @@ static uint8_t uart_rxchar(struct UartDriver* Uart) {
  * waits until finished.
  */
 static uint8_t uart_txchar(struct UartDriver* Uart, uint8_t c) {
-  XUartNs550_SendByte(Uart->Device.BaseAddress, c);
-  return c;
+  #if XPAR_UART_USE_POLLING_MODE
+    XUartNs550_SendByte(Uart->Device.BaseAddress, c);
+    return c;
+  #else
+    return uart_txchar(Uart, c);
+  #endif
 }
 
 /**
  * Transmit a buffer. Waits for @UART_TX_DELAY ms. Synchronous API.
  * Returns number of transmitted bytes or -1 in case of a timeout.
  */
-static int uart_txbuffer(struct UartDriver* Uart, char *ptr, int len) {
+static int uart_txbuffer(struct UartDriver* Uart, uint8_t *ptr, int len) {
   static int returnval;
   /* First acquire mutex */
   configASSERT( Uart->tx_mutex != NULL);
@@ -170,7 +180,7 @@ static int uart_txbuffer(struct UartDriver* Uart, char *ptr, int len) {
   Uart->tx_task = xTaskGetCurrentTaskHandle();
   Uart->tx_len = len;
   /* Send buffer */
-	XUartNs550_Send(&Uart->Device, (uint8_t*)ptr, len);
+	XUartNs550_Send(&Uart->Device, ptr, len);
   /* wait for notification */
 	if (xTaskNotifyWait( 0, 0, NULL, UART_TX_DELAY )) {
     /* TX succesfull, return number of transmitted bytes */
@@ -188,7 +198,7 @@ static int uart_txbuffer(struct UartDriver* Uart, char *ptr, int len) {
  * Receive a buffer of data. Synchronous API. Note that right now it waits
  * indefinitely until the buffer is filled.
  */
-static int uart_rxbuffer(struct UartDriver* Uart, char *ptr, int len) {
+static int uart_rxbuffer(struct UartDriver* Uart, uint8_t *ptr, int len) {
   static int returnval;
   /* First acquire mutex */
   configASSERT( Uart->rx_mutex != NULL);
@@ -197,7 +207,7 @@ static int uart_rxbuffer(struct UartDriver* Uart, char *ptr, int len) {
   Uart->rx_task = xTaskGetCurrentTaskHandle();
   Uart->rx_len = len;
   /* Send buffer */
-	XUartNs550_Recv(&Uart->Device, (uint8_t*)ptr, len);
+	XUartNs550_Recv(&Uart->Device, ptr, len);
   /* wait for notification */
 	if (xTaskNotifyWait( 0, 0, NULL, portMAX_DELAY )) {
     /* TX succesfull, return number of transmitted bytes */
