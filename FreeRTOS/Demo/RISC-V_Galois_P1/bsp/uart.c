@@ -174,12 +174,16 @@ static void uart_init(struct UartDriver* Uart, uint8_t device_id, uint8_t plic_s
   Uart->tx_mutex = xSemaphoreCreateMutex();
   Uart->rx_mutex = xSemaphoreCreateMutex();
   switch (device_id) {
+    #if BSP_USE_UART0
     case 0:
       Uart->Device = UartNs550_0;
       break;
+    #endif
+    #if BSP_USE_UART1
     case 1:
       Uart->Device = UartNs550_1;
       break;
+    #endif
     default:
       // Trigger a fault: unsupported device ID
       configASSERT(0);

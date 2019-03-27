@@ -145,9 +145,8 @@ ifeq ($(PROG),main_drivers)
 	DEMO_SRC += demo/xaxiethernet_example_util.c
 	INCLUDES += -I./demo
 else
-ifeq ($(PROG),main_ping)
+ifeq ($(PROG),main_gpio)
 	CFLAGS += -DmainDEMO_TYPE=4
-	DEMO_SRC += demo/xaxiethernet_example_util.c
 	INCLUDES += -I./demo
 else
 ifeq ($(PROG),main_tcp)

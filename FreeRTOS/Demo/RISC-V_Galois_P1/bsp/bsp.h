@@ -69,7 +69,7 @@ void external_interrupt_handler( uint32_t cause );
 #define XPAR_UARTNS550_0_BASEADDR 0x62300000ULL
 #define XPAR_UARTNS550_0_CLOCK_HZ (83000000ULL) // 83MHz
 
-#define BSP_USE_UART1 1
+#define BSP_USE_UART1 0
 #define XPAR_UARTNS550_1_DEVICE_ID 1
 #define XPAR_UARTNS550_1_BASEADDR (0x62340000ULL)
 #define XPAR_UARTNS550_1_CLOCK_HZ UART_CLOCK_RATE
@@ -162,13 +162,13 @@ void external_interrupt_handler( uint32_t cause );
  */
 #define XPAR_XIIC_NUM_INSTANCES 2
 
-#define BSP_USE_IIC0 1
+#define BSP_USE_IIC0 0
 #define XPAR_IIC_0_DEVICE_ID 0
 #define XPAR_IIC_0_BASEADDR (0x62310000ULL)
 #define XPAR_IIC_0_TEN_BIT_ADR 0
 #define XPAR_IIC_0_GPO_WIDTH 32
 
-#define BSP_USE_IIC1 1
+#define BSP_USE_IIC1 0
 #define XPAR_IIC_1_DEVICE_ID 1
 #define XPAR_IIC_1_BASEADDR (0x62310000ULL)
 #define XPAR_IIC_1_TEN_BIT_ADR 0

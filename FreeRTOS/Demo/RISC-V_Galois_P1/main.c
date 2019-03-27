@@ -50,8 +50,8 @@
 	#pragma message "Demo type 3: Drivers"
 	extern void main_drivers( void );
 #elif mainDEMO_TYPE == 4
-	#pragma message "Demo type 4: Ping"
-	extern void main_ping( void );
+	#pragma message "Demo type 4: GPIO"
+	extern void main_gpio( void );
 #elif mainDEMO_TYPE == 5
 	#pragma message "Demo type 5: TCP"
 	extern void main_tcp( void );
@@ -93,7 +93,7 @@ int main( void )
 	}
 	#elif mainDEMO_TYPE == 4
 	{
-		main_ping();
+		main_gpio();
 	}
 	#elif mainDEMO_TYPE == 5
 	{
