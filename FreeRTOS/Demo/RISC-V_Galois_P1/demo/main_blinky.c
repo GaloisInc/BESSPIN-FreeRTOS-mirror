@@ -104,8 +104,6 @@ void main_blinky( void );
  */
 static void prvQueueReceiveTask( void *pvParameters );
 static void prvQueueSendTask( void *pvParameters );
-static void prvIicTask( void *pvParams);
-//static void prvUartReceiveTask( void *pvParameters );
 
 /*-----------------------------------------------------------*/
 
@@ -123,16 +121,14 @@ void main_blinky( void )
 	{
 		/* Start the two tasks as described in the comments at the top of this
 		file. */
-		// xTaskCreate( prvQueueReceiveTask,				/* The function that implements the task. */
-		// 			"Rx", 								/* The text name assigned to the task - for debug only as it is not used by the kernel. */
-		// 			configMINIMAL_STACK_SIZE * 2U, 			/* The size of the stack to allocate to the task. */
-		// 			NULL, 								/* The parameter passed to the task - not used in this case. */
-		// 			mainQUEUE_RECEIVE_TASK_PRIORITY, 	/* The priority assigned to the task. */
-		// 			NULL );								/* The task handle is not required, so NULL is passed. */
+		xTaskCreate( prvQueueReceiveTask,				/* The function that implements the task. */
+		 			"Rx", 								/* The text name assigned to the task - for debug only as it is not used by the kernel. */
+		 			configMINIMAL_STACK_SIZE * 2U, 			/* The size of the stack to allocate to the task. */
+		 			NULL, 								/* The parameter passed to the task - not used in this case. */
+		 			mainQUEUE_RECEIVE_TASK_PRIORITY, 	/* The priority assigned to the task. */
+		 			NULL );								/* The task handle is not required, so NULL is passed. */
 
-		//xTaskCreate( prvQueueSendTask, "TX", configMINIMAL_STACK_SIZE * 2U, NULL, mainQUEUE_SEND_TASK_PRIORITY, NULL );
-		//xTaskCreate( prvUartReceiveTask, "prvUartReceiveTask", configMINIMAL_STACK_SIZE * 2U, NULL, mainQUEUE_SEND_TASK_PRIORITY, NULL );
-		xTaskCreate( prvIicTask, "prvIicTask", configMINIMAL_STACK_SIZE * 2U, NULL, mainQUEUE_SEND_TASK_PRIORITY, NULL );
+		xTaskCreate( prvQueueSendTask, "TX", configMINIMAL_STACK_SIZE * 2U, NULL, mainQUEUE_SEND_TASK_PRIORITY, NULL );
 
 		/* Start the tasks and timer running. */
 		vTaskStartScheduler();
@@ -147,40 +143,6 @@ void main_blinky( void )
 	for( ;; );
 }
 /*-----------------------------------------------------------*/
-
-static void prvIicTask( void *pvParams)
-{
-	printf("Starting drivers task\n");
-	uint8_t addr = 0x18;
-	uint8_t tx_data[] = {1,2,3};
-	uint8_t tx_len = 3;
-
-	for (;;) {
-		printf("Sending data\r\n");
-		int res = iic0_transmit(addr, tx_data, tx_len);
-		printf("res = %i\r\n", res);
-		vTaskDelay(pdMS_TO_TICKS(1000));
-	}
-}
-
-// static void prvUartReceiveTask( void *pvParameters ) {
-// 	(void)pvParameters;
-
-// 	char buf[10];
-// 	buf[9] = '\0';
-// 	for (;;)
-// 	{
-// 		int len = uart0_rxbuffer(buf, 1);
-// 		if (len == -1) {
-// 			printf("Timeout\r\n");
-// 		} else {
-// 			printf("Got %i bytes: %s\r\n", len, buf);
-// 		}
-// 		//char c = uart0_rxchar();
-// 		//uart0_txchar(c);
-// 	}
-// }
-
 
 static void prvQueueSendTask( void *pvParameters )
 {

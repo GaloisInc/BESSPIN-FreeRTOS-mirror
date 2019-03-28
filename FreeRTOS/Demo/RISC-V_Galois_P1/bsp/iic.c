@@ -6,25 +6,12 @@
 /*****************************************************************************/
 /* Structs */
 
-/* Device driver for IIC peripheral */
-struct IicDriver
-{
-    XIic Device; /* Xilinx IIC driver */
-    /* Counters used to determine when buffer has been send and received */
-    volatile int TotalTransactiondCount;
-    volatile int TotalErrorCount;
-    volatile int Errors;
-    int trans_len;            /* Length of the transaction */
-    SemaphoreHandle_t mutex;  /* Mutex for bus acquisition */
-    TaskHandle_t task_handle; /* handle for task that initiated a transaction */
-};
-
 /*****************************************************************************/
 /* Static functions, macros etc */
 
 static void iic_init(struct IicDriver *Iic, uint8_t device_id, uint8_t plic_source_id);
-static int iic_transmit(struct IicDriver *Iic, uint8_t addr, uint8_t *tx_data, uint8_t tx_len);
-static int iic_receive(struct IicDriver *Iic, uint8_t addr, uint8_t *rx_data, uint8_t rx_len);
+int iic_transmit(struct IicDriver *Iic, uint8_t addr, uint8_t *tx_data, uint8_t tx_len);
+int iic_receive(struct IicDriver *Iic, uint8_t addr, uint8_t *rx_data, uint8_t rx_len);
 
 static void RecvHandler(void *CallbackRef, int ByteCount);
 static void SendHandler(void *CallbackRef, int Status);
@@ -108,7 +95,7 @@ static void iic_init(struct IicDriver *Iic, uint8_t device_id, uint8_t plic_sour
  * @param tx_data is the data buffer
  * @param tx_len is the length of tx_data (and the number of bytes to be sent)
  */
-static int iic_transmit(struct IicDriver *Iic, uint8_t addr, uint8_t *tx_data, uint8_t tx_len)
+int iic_transmit(struct IicDriver *Iic, uint8_t addr, uint8_t *tx_data, uint8_t tx_len)
 {
     int returnval;
     configASSERT(Iic->mutex != NULL);
@@ -154,7 +141,7 @@ static int iic_transmit(struct IicDriver *Iic, uint8_t addr, uint8_t *tx_data, u
  * @param tx_data is the data buffer
  * @param tx_len is the length of rx_data (and the number of bytes to be received)
  */
-static int iic_receive(struct IicDriver *Iic, uint8_t addr, uint8_t *rx_data, uint8_t rx_len)
+int iic_receive(struct IicDriver *Iic, uint8_t addr, uint8_t *rx_data, uint8_t rx_len)
 {
     int returnval;
     configASSERT(Iic->mutex != NULL);

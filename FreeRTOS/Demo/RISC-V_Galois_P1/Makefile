@@ -143,8 +143,9 @@ ifeq ($(PROG),main_full)
 else
 ifeq ($(PROG),main_drivers)
 	CFLAGS += -DmainDEMO_TYPE=3
-	DEMO_SRC += demo/xaxiethernet_example_util.c
+	DEMO_SRC += devices/vcnl4010.c
 	INCLUDES += -I./demo
+	INCLUDES += -I./devices
 else
 ifeq ($(PROG),main_gpio)
 	CFLAGS += -DmainDEMO_TYPE=4

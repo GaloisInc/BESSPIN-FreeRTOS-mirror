@@ -32,25 +32,29 @@
 
 /* Kernel includes. */
 #include "FreeRTOS.h"
-//#include "task.h"
-//#include "queue.h"
 
-/* xillinx driver include */
-#include "iic.h"
-//#include "plic_driver.h"
-//#include "bsp.h"
+#include "vcnl4010.h"
+#include "uart.h"
+#include "gpio.h"
+
 
 /*-----------------------------------------------------------*/
 
 void main_drivers( void );
 
-static void prvIicTestTask( void *pvParameters );
+static void prvIicTestTask0( void *pvParameters );
+static void prvIicTestTask1( void *pvParameters );
+static void prvUartTxTestTask( void *pvParameters );
+static void prvUartRxTestTask( void *pvParameters );
 
 /*-----------------------------------------------------------*/
 
 void main_drivers( void )
 {
-	xTaskCreate( prvIicTestTask, "Driver_test_task", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL );
+	xTaskCreate( prvIicTestTask0, "prvIicTestTask0", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL );
+	xTaskCreate( prvIicTestTask1, "prvIicTestTask1", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL );
+	xTaskCreate( prvUartTxTestTask, "prvUartTxTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL );
+	xTaskCreate( prvUartRxTestTask, "prvUartRxTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL );
 
 	/* Start the tasks and timer running. */
 	vTaskStartScheduler();
@@ -60,16 +64,81 @@ void main_drivers( void )
 /*-----------------------------------------------------------*/
 
 
-static void prvIicTestTask( void *pvParameters ) {
-	printf("Starting drivers task\n");
-	uint8_t addr = 0x18;
-	uint8_t tx_data[] = {1,2,3};
-	uint8_t tx_len = 3;
+static void prvIicTestTask1( void *pvParameters ) {
+	(void) pvParameters;
+	struct Vcnl4010_t sensor1;
+	uint16_t proximity = 0;
+	uint16_t ambient_light = 0; 
+	printf("#1 Starting drivers task\n");
+	configASSERT( vcnl4010_init(&sensor1, &Iic1));
 
 	for (;;) {
-		printf("Sending data\r\n");
-		int res = iic0_transmit(addr, tx_data, tx_len);
-		printf("res = %u\r\n", res);
+		proximity = vcnl4010_readProximity(&sensor1);
+		printf("#1 Proximity: %u\r\n", proximity);
+
+		ambient_light = vcnl4010_readAmbient(&sensor1);
+		printf("#1 ambient: %u\r\n", ambient_light);
+
+		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
+}
+
+static void prvIicTestTask0( void *pvParameters ) {
+	(void) pvParameters;
+	struct Vcnl4010_t sensor0;
+	uint16_t proximity = 0;
+	uint16_t ambient_light = 0; 
+	printf("#0 Starting drivers task\n");
+	configASSERT( vcnl4010_init(&sensor0, &Iic0));
+
+	for (;;) {
+		proximity = vcnl4010_readProximity(&sensor0);
+		printf("#0 Proximity: %u\r\n", proximity);
+
+		ambient_light = vcnl4010_readAmbient(&sensor0);
+		printf("#0 ambient: %u\r\n", ambient_light);
+
+		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
+}
+
+static void prvUartTxTestTask( void *pvParameters )
+{
+	(void) pvParameters;
+	int cnt = 0;
+	char str[12];
+	
+	for (;;) {
+		sprintf(str, "%d\r\n", cnt);
+		int len = uart1_txbuffer(str, strlen(str));
+ 		if (len == -1) {
+ 			printf("Timeout\r\n");
+ 		} else {
+ 			printf("Tx %i bytes: %s\r\n", len, str);
+ 		}
+		cnt++;
+		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
+}
+
+static void prvUartRxTestTask( void *pvParameters )
+{
+	(void) pvParameters;
+	int cnt = 0;
+	char str[12];
+	
+	for (;;) {
+		gpio2_clear(1);
+		gpio2_clear(3);
+		int len = uart1_rxbuffer(str, 1);
+ 		if (len == -1) {
+ 			printf("Timeout\r\n");
+			gpio2_write(1);
+ 		} else {
+			uart1_txbuffer(str, 1);
+ 			gpio2_write(3);
+ 		}
+		cnt++;
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
 }
