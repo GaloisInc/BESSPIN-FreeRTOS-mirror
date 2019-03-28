@@ -86,52 +86,50 @@ void vTestGPIO( void *pvParameters )
 
   /* GPIO are already set in hardware to be outputs */
   for (;;) {
-  /***** WRITE TO PINS *****/
-  /* Write to GPIO pin #1 */
-  gpio1_write(1);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
+    /***** WRITE TO PINS *****/
+    /* Write to GPIO pin #1 */
+    gpio1_write(1);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
 
-  /* Write to every other LED */
-  gpio2_write(1);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
-  gpio2_write(3);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
-  gpio2_write(5);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
-  gpio2_write(7);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
+    /* Write to every other LED */
+    gpio2_write(1);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
+    gpio2_write(3);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
+    gpio2_write(5);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
+    gpio2_write(7);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
 
-  /***** CLEAR PINS AND WRITE TO OTHERS PINS *****/
-  /* Clear GPIO pin #1 */
-  gpio1_clear(1);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
+    /***** CLEAR PINS AND WRITE TO OTHERS PINS *****/
+    /* Clear GPIO pin #1 */
+    gpio1_clear(1);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
 
-  /* Clear those every other LEDs */
-  gpio2_clear(1);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
-  gpio2_clear(3);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
-  gpio2_clear(5);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
-  gpio2_clear(7);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
+    /* Clear those every other LEDs */
+    gpio2_clear(1);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
+    gpio2_clear(3);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
+    gpio2_clear(5);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
+    gpio2_clear(7);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
 
-  /* Write to GPIO pin #0 */
-  gpio1_write(0);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
+    /* Write to GPIO pin #0 */
+    gpio1_write(0);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
 
-  /* Write to every other LED */
-  gpio2_write(0);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
-  gpio2_write(2);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
-  gpio2_write(4);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
-  gpio2_write(6);
-  vTaskDelay( pdMS_TO_TICKS(1000) );
+    /* Write to every other LED */
+    gpio2_write(0);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
+    gpio2_write(2);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
+    gpio2_write(4);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
+    gpio2_write(6);
+    vTaskDelay( pdMS_TO_TICKS(1000) );
   }
-
-  
 
   vTaskDelete( NULL );
 }

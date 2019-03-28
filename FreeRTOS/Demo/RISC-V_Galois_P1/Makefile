@@ -104,6 +104,7 @@ INCLUDES = \
 	-I./bsp/xilinx/axidma \
 	-I./bsp/xilinx/axiethernet \
 	-I./bsp/xilinx/uartns550 \
+	-I./bsp/xilinx/iic \
 	-I$(FREERTOS_SOURCE_DIR)/include \
 	-I../Common/include \
 	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V

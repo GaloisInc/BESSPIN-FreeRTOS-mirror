@@ -25,7 +25,7 @@ void prvSetupHardware( void )
 
     #if BSP_USE_UART1
         PLIC_set_priority(&Plic, PLIC_SOURCE_UART1, PLIC_PRIORITY_UART1);
-        uart0_init();
+        uart1_init();
     #endif
 
     #if BSP_USE_ETHERNET
