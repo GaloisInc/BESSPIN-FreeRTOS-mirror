@@ -112,12 +112,15 @@ int iic_transmit(struct IicDriver *Iic, uint8_t addr, uint8_t *tx_data, uint8_t 
     if (xTaskNotifyWait(0, 0, NULL, pdMS_TO_TICKS(IIC_TRANSACTION_DELAY_MS)))
     {
         /* Check Error value */
-        if (Iic->Errors != 0) {
+        if (Iic->Errors != 0)
+        {
             // an error occured
-            configASSERT( Iic->Errors == XII_SLAVE_NO_ACK_EVENT); // TODO: remove?
-            printf("Error occured: %i\n",Iic->Errors);
+            configASSERT(Iic->Errors == XII_SLAVE_NO_ACK_EVENT); // TODO: remove?
+            printf("Error occured: %i\n", Iic->Errors);
             returnval = -1;
-        } else {
+        }
+        else
+        {
             /* Transaction succesfull, return number of transmitted bytes */
             returnval = Iic->TotalTransactiondCount;
         }
@@ -158,12 +161,15 @@ int iic_receive(struct IicDriver *Iic, uint8_t addr, uint8_t *rx_data, uint8_t r
     if (xTaskNotifyWait(0, 0, NULL, pdMS_TO_TICKS(IIC_TRANSACTION_DELAY_MS)))
     {
         /* Check Error value */
-        if (Iic->Errors != 0) {
+        if (Iic->Errors != 0)
+        {
             // an error occured
-            configASSERT( Iic->Errors == XII_SLAVE_NO_ACK_EVENT); // TODO: remove?
-            printf("Error occured: %i\n",Iic->Errors);
+            configASSERT(Iic->Errors == XII_SLAVE_NO_ACK_EVENT); // TODO: remove?
+            printf("Error occured: %i\n", Iic->Errors);
             returnval = -1;
-        } else {
+        }
+        else
+        {
             /* Transaction succesfull, return number of transmitted bytes */
             returnval = Iic->TotalTransactiondCount;
         }
@@ -200,7 +206,8 @@ static void RecvHandler(void *CallbackRef, int ByteCount)
 {
     struct IicDriver *Iic = (struct IicDriver *)CallbackRef;
 
-    if (ByteCount != 0) {
+    if (ByteCount != 0)
+    {
         // do nothing untill we receive all the bytes
         return;
     }
@@ -263,35 +270,35 @@ static void StatusHandler(void *CallbackRef, int Status)
 }
 
 #if BSP_USE_IIC0
-    void iic0_init(void)
-    {
-        iic_init(&Iic0, XPAR_IIC_0_DEVICE_ID, PLIC_SOURCE_IIC0);
-    }
+void iic0_init(void)
+{
+    iic_init(&Iic0, XPAR_IIC_0_DEVICE_ID, PLIC_SOURCE_IIC0);
+}
 
-    int iic0_transmit(uint8_t addr, uint8_t *tx_data, uint8_t tx_len)
-    {
-        return iic_transmit(&Iic0, addr, tx_data, tx_len);
-    }
+int iic0_transmit(uint8_t addr, uint8_t *tx_data, uint8_t tx_len)
+{
+    return iic_transmit(&Iic0, addr, tx_data, tx_len);
+}
 
-    int iic0_receive(uint8_t addr, uint8_t *rx_data, uint8_t rx_len)
-    {
-        return iic_receive(&Iic0, addr, rx_data, rx_len);
-    }
+int iic0_receive(uint8_t addr, uint8_t *rx_data, uint8_t rx_len)
+{
+    return iic_receive(&Iic0, addr, rx_data, rx_len);
+}
 #endif
 
 #if BSP_USE_IIC1
-    void iic1_init(void)
-    {
-        iic_init(&Iic1, XPAR_IIC_1_DEVICE_ID, PLIC_SOURCE_IIC1);
-    }
+void iic1_init(void)
+{
+    iic_init(&Iic1, XPAR_IIC_1_DEVICE_ID, PLIC_SOURCE_IIC1);
+}
 
-    int iic1_transmit(uint8_t addr, uint8_t *tx_data, uint8_t tx_len)
-    {
-        return iic_transmit(&Iic1, addr, tx_data, tx_len);
-    }
+int iic1_transmit(uint8_t addr, uint8_t *tx_data, uint8_t tx_len)
+{
+    return iic_transmit(&Iic1, addr, tx_data, tx_len);
+}
 
-    int iic1_receive(uint8_t addr, uint8_t *rx_data, uint8_t rx_len)
-    {
-        return iic_receive(&Iic1, addr, rx_data, rx_len);
-    }
+int iic1_receive(uint8_t addr, uint8_t *rx_data, uint8_t rx_len)
+{
+    return iic_receive(&Iic1, addr, rx_data, rx_len);
+}
 #endif
