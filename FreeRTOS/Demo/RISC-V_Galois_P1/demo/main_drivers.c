@@ -169,10 +169,11 @@ static void prvUartRx0TestTask(void *pvParameters)
 		}
 		else
 		{
+			uart0_txbuffer(str, 1);
 			gpio2_write(2);
 		}
 		cnt++;
-		vTaskDelay(pdMS_TO_TICKS(1000));
+		vTaskDelay(pdMS_TO_TICKS(10));
 	}
 }
 
@@ -193,9 +194,10 @@ static void prvUartRx1TestTask(void *pvParameters)
 		}
 		else
 		{
+			uart1_txbuffer(str, 1);
 			gpio2_write(4);
 		}
 		cnt++;
-		vTaskDelay(pdMS_TO_TICKS(1000));
+		vTaskDelay(pdMS_TO_TICKS(10));
 	}
 }

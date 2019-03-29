@@ -40,6 +40,7 @@ struct UartDriver
 /*****************************************************************************/
 /* Static functions, macros etc */
 
+static bool uart_rxready(struct UartDriver *Uart);
 static uint8_t uart_rxchar(struct UartDriver *Uart);
 static uint8_t uart_txchar(struct UartDriver *Uart, uint8_t c);
 static int uart_rxbuffer(struct UartDriver *Uart, uint8_t *ptr, int len);
@@ -78,10 +79,9 @@ void uart0_init(void)
 /**
  * Return 1 if UART0 has at leas 1 byte in the RX FIFO
  */
-int uart0_rxready(void)
+bool uart0_rxready(void)
 {
-    // FIXME
-    return 0;
+    return uart_rxready(&Uart0);
 }
 
 /**
@@ -128,10 +128,9 @@ void uart1_init(void)
 /**
  * Return 1 if UART1 has at leas 1 byte in the RX FIFO
  */
-int uart1_rxready(void)
+bool uart1_rxready(void)
 {
-    // TODO
-    return 0;
+    return uart_rxready(&Uart1);
 }
 
 /**
@@ -170,6 +169,11 @@ int uart1_rxbuffer(char *ptr, int len)
 #endif /* BSP_USE_UART1 */
 /*****************************************************************************/
 /* Driver specific defintions */
+
+static bool uart_rxready(struct UartDriver *Uart)
+{
+    return (bool)XUartNs550_IsReceiveData(Uart->Device.BaseAddress);
+}
 
 /**
  * Initialize UART peripheral
