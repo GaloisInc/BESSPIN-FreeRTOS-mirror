@@ -60,6 +60,7 @@ void external_interrupt_handler( uint32_t cause );
 /**
  * UART defines
  */
+#define XPAR_UART_USE_POLLING_MODE 1
 #define XPAR_XUARTNS550_NUM_INSTANCES 2
 #define XPAR_DEFAULT_BAUD_RATE 115200
 

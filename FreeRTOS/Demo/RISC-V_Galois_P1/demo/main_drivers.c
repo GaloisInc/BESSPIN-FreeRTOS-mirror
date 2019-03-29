@@ -33,46 +33,70 @@
 /* Kernel includes. */
 #include "FreeRTOS.h"
 
-#include "vcnl4010.h"
+// Drivers
 #include "uart.h"
 #include "gpio.h"
 
+// Devices
+#include "vcnl4010.h"
+#include "serLcd.h"
 
 /*-----------------------------------------------------------*/
 
-void main_drivers( void );
+void main_drivers(void);
 
-static void prvIicTestTask0( void *pvParameters );
-static void prvIicTestTask1( void *pvParameters );
-static void prvUartTxTestTask( void *pvParameters );
-static void prvUartRxTestTask( void *pvParameters );
+static void prvIicTestTask0(void *pvParameters);
+static void prvIicTestTask1(void *pvParameters);
+static void prvUartTxTestTask(void *pvParameters);
+static void prvUartRx0TestTask(void *pvParameters);
+static void prvUartRx1TestTask(void *pvParameters);
+static void prvLcdTestTask(void *pvParameters);
 
 /*-----------------------------------------------------------*/
 
-void main_drivers( void )
+void main_drivers(void)
 {
-	xTaskCreate( prvIicTestTask0, "prvIicTestTask0", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL );
-	xTaskCreate( prvIicTestTask1, "prvIicTestTask1", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL );
-	xTaskCreate( prvUartTxTestTask, "prvUartTxTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL );
-	xTaskCreate( prvUartRxTestTask, "prvUartRxTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL );
+	xTaskCreate(prvIicTestTask0, "prvIicTestTask0", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	xTaskCreate(prvIicTestTask1, "prvIicTestTask1", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	xTaskCreate(prvUartTxTestTask, "prvUartTxTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	xTaskCreate(prvUartRx0TestTask, "prvUartRx0TestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	xTaskCreate(prvUartRx1TestTask, "prvUartRx1TestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	xTaskCreate(prvLcdTestTask, "prvLcdTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
 
 	/* Start the tasks and timer running. */
 	vTaskStartScheduler();
 
-	for( ;; );
+	for (;;)
+		;
 }
 /*-----------------------------------------------------------*/
 
+static void prvLcdTestTask(void *pvParameters)
+{
+	(void)pvParameters;
+	int cnt = 0;
+	char str[16];
 
-static void prvIicTestTask1( void *pvParameters ) {
-	(void) pvParameters;
+	for (;;)
+	{
+		sprintf(str, "Counter: %d\r\n", cnt);
+		serLcdPrintf(str);
+		cnt++;
+		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
+}
+
+static void prvIicTestTask1(void *pvParameters)
+{
+	(void)pvParameters;
 	struct Vcnl4010_t sensor1;
 	uint16_t proximity = 0;
-	uint16_t ambient_light = 0; 
+	uint16_t ambient_light = 0;
 	printf("#1 Starting drivers task\n");
-	configASSERT( vcnl4010_init(&sensor1, &Iic1));
+	configASSERT(vcnl4010_init(&sensor1, &Iic1));
 
-	for (;;) {
+	for (;;)
+	{
 		proximity = vcnl4010_readProximity(&sensor1);
 		printf("#1 Proximity: %u\r\n", proximity);
 
@@ -83,15 +107,17 @@ static void prvIicTestTask1( void *pvParameters ) {
 	}
 }
 
-static void prvIicTestTask0( void *pvParameters ) {
-	(void) pvParameters;
+static void prvIicTestTask0(void *pvParameters)
+{
+	(void)pvParameters;
 	struct Vcnl4010_t sensor0;
 	uint16_t proximity = 0;
-	uint16_t ambient_light = 0; 
+	uint16_t ambient_light = 0;
 	printf("#0 Starting drivers task\n");
-	configASSERT( vcnl4010_init(&sensor0, &Iic0));
+	configASSERT(vcnl4010_init(&sensor0, &Iic0));
 
-	for (;;) {
+	for (;;)
+	{
 		proximity = vcnl4010_readProximity(&sensor0);
 		printf("#0 Proximity: %u\r\n", proximity);
 
@@ -102,42 +128,73 @@ static void prvIicTestTask0( void *pvParameters ) {
 	}
 }
 
-static void prvUartTxTestTask( void *pvParameters )
+static void prvUartTxTestTask(void *pvParameters)
 {
-	(void) pvParameters;
+	(void)pvParameters;
 	int cnt = 0;
 	char str[12];
-	
-	for (;;) {
+
+	for (;;)
+	{
+		gpio1_clear(0);
+		gpio1_clear(1);
 		sprintf(str, "%d\r\n", cnt);
 		int len = uart1_txbuffer(str, strlen(str));
- 		if (len == -1) {
- 			printf("Timeout\r\n");
- 		} else {
- 			printf("Tx %i bytes: %s\r\n", len, str);
- 		}
+		if (len == -1)
+		{
+			printf("Timeout\r\n");
+		}
+		cnt++;
+		vTaskDelay(pdMS_TO_TICKS(1000));
+		gpio1_write(0);
+		gpio1_write(1);
+		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
+}
+
+static void prvUartRx0TestTask(void *pvParameters)
+{
+	(void)pvParameters;
+	int cnt = 0;
+	char str[12];
+
+	for (;;)
+	{
+		gpio2_clear(1);
+		gpio2_clear(2);
+		int len = uart0_rxbuffer(str, 1);
+		if (len == -1)
+		{
+			gpio2_write(1);
+		}
+		else
+		{
+			gpio2_write(2);
+		}
 		cnt++;
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
 }
 
-static void prvUartRxTestTask( void *pvParameters )
+static void prvUartRx1TestTask(void *pvParameters)
 {
-	(void) pvParameters;
+	(void)pvParameters;
 	int cnt = 0;
 	char str[12];
-	
-	for (;;) {
-		gpio2_clear(1);
+
+	for (;;)
+	{
 		gpio2_clear(3);
+		gpio2_clear(4);
 		int len = uart1_rxbuffer(str, 1);
- 		if (len == -1) {
- 			printf("Timeout\r\n");
-			gpio2_write(1);
- 		} else {
-			uart1_txbuffer(str, 1);
- 			gpio2_write(3);
- 		}
+		if (len == -1)
+		{
+			gpio2_write(3);
+		}
+		else
+		{
+			gpio2_write(4);
+		}
 		cnt++;
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}

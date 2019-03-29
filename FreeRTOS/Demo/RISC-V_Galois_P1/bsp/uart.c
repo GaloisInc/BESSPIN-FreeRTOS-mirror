@@ -45,7 +45,10 @@ static uint8_t uart_txchar(struct UartDriver *Uart, uint8_t c);
 static int uart_rxbuffer(struct UartDriver *Uart, uint8_t *ptr, int len);
 static int uart_txbuffer(struct UartDriver *Uart, uint8_t *ptr, int len);
 static void uart_init(struct UartDriver *Uart, uint8_t device_id, uint8_t plic_source_id);
+
+#if !XPAR_UART_USE_POLLING_MODE
 static void UartNs550StatusHandler(void *CallBackRef, u32 Event, unsigned int EventData);
+#endif
 
 /*****************************************************************************/
 /* Global defines */
@@ -200,6 +203,10 @@ static void uart_init(struct UartDriver *Uart, uint8_t device_id, uint8_t plic_s
     /* Initialize the UartNs550 driver so that it's ready to use */
     configASSERT(XUartNs550_Initialize(&Uart->Device, device_id) == XST_SUCCESS);
 
+#if XPAR_UART_USE_POLLING_MODE
+    (void)plic_source_id;
+    uint16_t Options = XUN_OPTION_FIFOS_ENABLE | XUN_FIFO_TX_RESET | XUN_FIFO_RX_RESET;
+#else
     /* Setup interrupt system */
     configASSERT(PLIC_register_interrupt_handler(&Plic, plic_source_id,
                                                  (XInterruptHandler)XUartNs550_InterruptHandler, Uart) != 0);
@@ -211,6 +218,7 @@ static void uart_init(struct UartDriver *Uart, uint8_t device_id, uint8_t plic_s
     /* Enable interrupts, and enable FIFOs */
     uint16_t Options = XUN_OPTION_DATA_INTR |
                        XUN_OPTION_FIFOS_ENABLE | XUN_FIFO_TX_RESET | XUN_FIFO_RX_RESET;
+#endif /* XPAR_UART_USE_POLLING_MODE */
     XUartNs550_SetOptions(&Uart->Device, Options);
 }
 
@@ -249,6 +257,13 @@ static uint8_t uart_txchar(struct UartDriver *Uart, uint8_t c)
  */
 static int uart_txbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
 {
+#if XPAR_UART_USE_POLLING_MODE
+    for (int i = 0; i < len; i++)
+    {
+        XUartNs550_SendByte(Uart->Device.BaseAddress, ptr[i]);
+    }
+    return len;
+#else
     static int returnval;
     /* First acquire mutex */
     configASSERT(Uart->tx_mutex != NULL);
@@ -272,6 +287,7 @@ static int uart_txbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
     /* Release mutex and return */
     xSemaphoreGive(Uart->tx_mutex);
     return returnval;
+#endif /* XPAR_UART_USE_POLLING_MODE */
 }
 
 /**
@@ -280,6 +296,13 @@ static int uart_txbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
  */
 static int uart_rxbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
 {
+#if XPAR_UART_USE_POLLING_MODE
+    for (int i = 0; i < len; i++)
+    {
+        ptr[i] = XUartNs550_RecvByte(Uart->Device.BaseAddress);
+    }
+    return len;
+#else
     static int returnval;
     /* First acquire mutex */
     configASSERT(Uart->rx_mutex != NULL);
@@ -303,8 +326,10 @@ static int uart_rxbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
     /* Release mutex and return */
     xSemaphoreGive(Uart->rx_mutex);
     return returnval;
+#endif /* XPAR_UART_USE_POLLING_MODE */
 }
 
+#if !XPAR_UART_USE_POLLING_MODE
 /**
  * UART Interrupt handler. Handles RX, TX, Timeouts and Errors.
  */
@@ -365,3 +390,4 @@ static void UartNs550StatusHandler(void *CallBackRef, u32 Event,
         Uart->Errors = XUartNs550_GetLastErrors(&Uart->Device);
     }
 }
+#endif /* !XPAR_UART_USE_POLLING_MODE */
