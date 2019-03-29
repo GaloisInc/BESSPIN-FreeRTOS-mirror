@@ -261,17 +261,18 @@ static uint8_t uart_txchar(struct UartDriver *Uart, uint8_t c)
  */
 static int uart_txbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
 {
+    static int returnval;
+    configASSERT(Uart->tx_mutex != NULL);
+    /* First acquire mutex */
+    configASSERT(xSemaphoreTake(Uart->tx_mutex, portMAX_DELAY) == pdTRUE);
+
 #if XPAR_UART_USE_POLLING_MODE
     for (int i = 0; i < len; i++)
     {
         XUartNs550_SendByte(Uart->Device.BaseAddress, ptr[i]);
     }
-    return len;
+    returnval = len;
 #else
-    static int returnval;
-    /* First acquire mutex */
-    configASSERT(Uart->tx_mutex != NULL);
-    configASSERT(xSemaphoreTake(Uart->tx_mutex, portMAX_DELAY) == pdTRUE);
     /* Get current task handle */
     Uart->tx_task = xTaskGetCurrentTaskHandle();
     Uart->tx_len = len;
@@ -288,10 +289,10 @@ static int uart_txbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
         /* timeout occured */
         returnval = -1;
     }
+#endif /* XPAR_UART_USE_POLLING_MODE */
     /* Release mutex and return */
     xSemaphoreGive(Uart->tx_mutex);
     return returnval;
-#endif /* XPAR_UART_USE_POLLING_MODE */
 }
 
 /**
@@ -300,17 +301,18 @@ static int uart_txbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
  */
 static int uart_rxbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
 {
+    static int returnval;
+    /* First acquire mutex */
+    configASSERT(Uart->rx_mutex != NULL);
+    configASSERT(xSemaphoreTake(Uart->rx_mutex, portMAX_DELAY) == pdTRUE);
+
 #if XPAR_UART_USE_POLLING_MODE
     for (int i = 0; i < len; i++)
     {
         ptr[i] = XUartNs550_RecvByte(Uart->Device.BaseAddress);
     }
-    return len;
+    returnval = len;
 #else
-    static int returnval;
-    /* First acquire mutex */
-    configASSERT(Uart->rx_mutex != NULL);
-    configASSERT(xSemaphoreTake(Uart->rx_mutex, portMAX_DELAY) == pdTRUE);
     /* Get current task handle */
     Uart->rx_task = xTaskGetCurrentTaskHandle();
     Uart->rx_len = len;
@@ -327,10 +329,10 @@ static int uart_rxbuffer(struct UartDriver *Uart, uint8_t *ptr, int len)
         /* timeout occured */
         returnval = -1;
     }
+#endif /* XPAR_UART_USE_POLLING_MODE */
     /* Release mutex and return */
     xSemaphoreGive(Uart->rx_mutex);
     return returnval;
-#endif /* XPAR_UART_USE_POLLING_MODE */
 }
 
 #if !XPAR_UART_USE_POLLING_MODE
