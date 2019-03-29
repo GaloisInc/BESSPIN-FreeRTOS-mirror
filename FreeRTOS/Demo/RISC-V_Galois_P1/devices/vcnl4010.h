@@ -4,7 +4,8 @@
 #include <stdbool.h>
 #include "iic.h"
 
-struct Vcnl4010_t {
+struct Vcnl4010_t
+{
     struct IicDriver *bus;
 };
 

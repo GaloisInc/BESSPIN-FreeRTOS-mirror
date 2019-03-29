@@ -54,8 +54,8 @@
 
 extern plic_instance_t Plic;
 
-void prvSetupHardware( void );
-void external_interrupt_handler( uint32_t cause );
+void prvSetupHardware(void);
+void external_interrupt_handler(uint32_t cause);
 
 /**
  * UART defines
@@ -83,9 +83,9 @@ void external_interrupt_handler( uint32_t cause );
 #define XPAR_XAXIDMA_NUM_INSTANCES 1
 #define XPAR_AXI_DMA 1
 
-#define	XPAR_AXIDMA_0_DEVICE_ID 0
+#define XPAR_AXIDMA_0_DEVICE_ID 0
 // Virtual base address of DMA engine
-#define	XPAR_AXIDMA_0_BASEADDR 0x62200000ULL
+#define XPAR_AXIDMA_0_BASEADDR 0x62200000ULL
 // Control/status stream
 #define XPAR_AXIDMA_0_SG_INCLUDE_STSCNTRL_STRM 1
 // AXI4 memory-mapped to stream
@@ -101,7 +101,7 @@ void external_interrupt_handler( uint32_t cause );
 // Scatter-gather engine
 #define XPAR_AXIDMA_0_INCLUDE_SG 1
 #define XPAR_AXIDMA_0_NUM_MM2S_CHANNELS 1
-#define XPAR_AXIDMA_0_NUM_S2MM_CHANNELS 1 
+#define XPAR_AXIDMA_0_NUM_S2MM_CHANNELS 1
 #define XPAR_AXI_DMA_0_MM2S_BURST_SIZE 16
 #define XPAR_AXI_DMA_0_S2MM_BURST_SIZE 16
 #define XPAR_AXI_DMA_0_MICRO_DMA 0
@@ -117,7 +117,7 @@ void external_interrupt_handler( uint32_t cause );
 #define XPAR_AXIETHERNET_0_PHYADDR 0x03
 #define XPAR_AXIETHERNET_0_DEVICE_ID 0
 #define XPAR_AXIETHERNET_0_BASEADDR 0x62100000ULL
-// 0 for SoftTemac at 10/100 Mbps, 1 for SoftTemac at 10/100/1000 Mbps and 2 for Vitex6 Hard Temac 
+// 0 for SoftTemac at 10/100 Mbps, 1 for SoftTemac at 10/100/1000 Mbps and 2 for Vitex6 Hard Temac
 #define XPAR_AXIETHERNET_0_TEMAC_TYPE 2 // TODO: not sure if this is right
 // TxCsum indicates that the device has checksum offload on the Tx channel or not.
 #define XPAR_AXIETHERNET_0_TXCSUM 0
@@ -139,10 +139,10 @@ void external_interrupt_handler( uint32_t cause );
 #define XPAR_AXIETHERNET_0_AVB 0
 // SGMII over LVDS
 #define XPAR_AXIETHERNET_0_ENABLE_SGMII_OVER_LVDS 1
-// Enable 1588 option. 
+// Enable 1588 option.
 #define XPAR_AXIETHERNET_0_ENABLE_1588 0
 // Tells whether MAC is 1G or 2p5G.
-#define XPAR_AXIETHERNET_0_SPEED XAE_SPEED_1000_MBPS// TODO: not sure if this is right
+#define XPAR_AXIETHERNET_0_SPEED XAE_SPEED_1000_MBPS // TODO: not sure if this is right
 // Number of table entries for the multicast address filtering // TODO: we are not using it
 #define XPAR_AXIETHERNET_0_NUM_TABLE_ENTRIES 4
 // Axi Ethernet interrupt ID.
@@ -178,7 +178,7 @@ void external_interrupt_handler( uint32_t cause );
 /**
  * SPI defines
  */
-#define XPAR_XSPI_NUM_INSTANCES     1
+#define XPAR_XSPI_NUM_INSTANCES 1
 
 #define BSP_USE_SPI0 0
 #define XPAR_SPI_0_DEVICE_ID 1
@@ -207,5 +207,3 @@ void external_interrupt_handler( uint32_t cause );
 #define msleep(_MSECS) vTaskDelay(pdMS_TO_TICKS(_MSECS));
 
 #endif /* RISCV_P1_BSP_H */
-
-
