@@ -38,6 +38,7 @@ FREERTOS_SRC = \
 	$(FREERTOS_SOURCE_DIR)/tasks.c \
 	$(FREERTOS_SOURCE_DIR)/timers.c \
 	$(FREERTOS_SOURCE_DIR)/event_groups.c \
+	$(FREERTOS_SOURCE_DIR)/stream_buffer.c \
 	$(FREERTOS_SOURCE_DIR)/portable/MemMang/heap_4.c # TODO TEST
 
 APP_SOURCE_DIR	= ../Common/Minimal
@@ -120,7 +121,6 @@ else
 ifeq ($(PROG),main_full)
 	CFLAGS += -DmainDEMO_TYPE=2
 	PORT_ASM += demo/RegTest.S
-	FREERTOS_SRC += $(FREERTOS_SOURCE_DIR)/stream_buffer.c
 	APP_SRC +=  \
 		$(APP_SOURCE_DIR)/AbortDelay.c \
 		$(APP_SOURCE_DIR)/BlockQ.c \
