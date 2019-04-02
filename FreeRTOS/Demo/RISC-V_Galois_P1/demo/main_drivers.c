@@ -90,12 +90,6 @@ void main_drivers(void)
 	xTaskCreate(prvUartRx0TestTask, "prvUartRx0TestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
 	xTaskCreate(prvUartRx1TestTask, "prvUartRx1TestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
 	xTaskCreate(prvLcdTestTask, "prvLcdTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
-
-	/* Start the tasks and timer running. */
-	vTaskStartScheduler();
-
-	for (;;)
-		;
 }
 /*-----------------------------------------------------------*/
 
@@ -240,7 +234,7 @@ static void prvUartTxTestTask(void *pvParameters)
 			printf("Timeout\r\n");
 		}
 		cnt++;
-		vTaskDelay(pdMS_TO_TICKS(100));
+		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
 }
 

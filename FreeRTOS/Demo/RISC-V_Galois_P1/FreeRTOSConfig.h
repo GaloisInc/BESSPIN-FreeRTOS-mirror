@@ -104,19 +104,16 @@
 #define configUSE_APPLICATION_TASK_TAG 0
 #define configUSE_COUNTING_SEMAPHORES 1
 
-// TODO: the stats are not functional yet
-#define configGENERATE_RUN_TIME_STATS 0
+// TODO: use only for debugging
+#define configGENERATE_RUN_TIME_STATS 1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 1
 
 /* Runtime stats definitions */
-// TODO: the stats are not functional yet
-// TODO: these are very rudimentary and might overflow, use only as an example
-// #define configUSE_STATS_FORMATTING_FUNCTIONS 1
-// extern uint64_t base_timer_value;
-// extern uint64_t port_get_current_mtime(void);
-// extern void port_init_stats(void);
-// #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() port_init_stats()
-// #define portGET_RUN_TIME_COUNTER_VALUE() (uint32_t)(port_get_current_mtime()-base_timer_value)
+// TODO: use only for debugging
+#define configUSE_STATS_FORMATTING_FUNCTIONS 1
+extern uint32_t port_get_current_mtime(void);
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
+#define portGET_RUN_TIME_COUNTER_VALUE() port_get_current_mtime()
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES 0
