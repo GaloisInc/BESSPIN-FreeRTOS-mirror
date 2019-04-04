@@ -637,6 +637,7 @@ int XSpi_Transfer(XSpi *InstancePtr, u8 *SendBufPtr,
 			/*
 			 * Data Transfer Width is Half Word (16 bit).
 			 */
+			#pragma GCC diagnostic ignored "-Wcast-align" /* Silence this warning as the driver works normally */
 			Data = *(u16 *)InstancePtr->SendBufferPtr;
 		} else if (DataWidth == XSP_DATAWIDTH_WORD){
 			/*

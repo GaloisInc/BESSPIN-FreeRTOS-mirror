@@ -159,12 +159,8 @@ ifeq ($(PROG),main_gpio)
 	CFLAGS += -DmainDEMO_TYPE=4
 	INCLUDES += -I./demo
 else
-ifeq ($(PROG),main_spi)
-	CFLAGS += -DmainDEMO_TYPE=5
-	INCLUDES += -I./demo
-else
 ifeq ($(PROG),main_tcp)
-	CFLAGS += -DmainDEMO_TYPE=6
+	CFLAGS += -DmainDEMO_TYPE=5
 	INCLUDES += \
 		-I./demo \
 		-I$(FREERTOS_TCP_SOURCE_DIR) \
@@ -192,7 +188,6 @@ ifeq ($(PROG),main_tcp)
 		demo/SimpleTCPEchoServer.c
 else
 	$(info unknown demo: $(PROG))
-endif
 endif
 endif
 endif

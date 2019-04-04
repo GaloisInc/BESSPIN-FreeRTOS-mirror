@@ -53,10 +53,7 @@ extern void main_drivers(void);
 #pragma message "Demo type 4: GPIO"
 extern void main_gpio(void);
 #elif mainDEMO_TYPE == 5
-#pragma message "Demo type 5: SPI"
-extern void main_spi(void);
-#elif mainDEMO_TYPE == 6
-#pragma message "Demo type 6: TCP"
+#pragma message "Demo type 5: TCP"
 extern void main_tcp(void);
 #else
 #error "Unsupported demo type"
@@ -139,10 +136,6 @@ int main(void)
 		main_gpio();
 	}
 #elif mainDEMO_TYPE == 5
-	{
-		main_spi();
-	}
-#elif mainDEMO_TYPE == 6
 	{
 		main_tcp();
 	}
