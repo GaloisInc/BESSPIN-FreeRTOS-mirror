@@ -42,7 +42,7 @@
 #include "vcnl4010.h"
 #include "serLcd.h"
 
-#if !(BSP_USE_IIC0 && BSP_USE_IIC0 && BSP_USE_UART0 && BSP_USE_UART1)
+#if !(BSP_USE_IIC0 && BSP_USE_IIC0 && BSP_USE_UART0 && BSP_USE_UART1 && BSP_USE_GPIO && BSP_USE_SPI1)
 #error "One or more peripherals are nor present, this test cannot be run"
 #endif 
 
@@ -84,12 +84,12 @@ void main_drivers(void)
 										/* The stream buffer's trigger level. */
 										sbiSTREAM_BUFFER_TRIGGER_LEVEL_5);
 
-	xTaskCreate(prvIicTestTask0, "prvIicTestTask0", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
-	xTaskCreate(prvIicTestTask1, "prvIicTestTask1", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
-	xTaskCreate(prvUartTxTestTask, "prvUartTxTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
-	xTaskCreate(prvUartRx0TestTask, "prvUartRx0TestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
-	xTaskCreate(prvUartRx1TestTask, "prvUartRx1TestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
-	xTaskCreate(prvLcdTestTask, "prvLcdTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	//xTaskCreate(prvIicTestTask0, "prvIicTestTask0", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	//xTaskCreate(prvIicTestTask1, "prvIicTestTask1", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	//xTaskCreate(prvUartTxTestTask, "prvUartTxTestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	//xTaskCreate(prvUartRx0TestTask, "prvUartRx0TestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	//xTaskCreate(prvUartRx1TestTask, "prvUartRx1TestTask", configMINIMAL_STACK_SIZE * 2U, NULL, tskIDLE_PRIORITY + 1, NULL);
+	xTaskCreate(prvLcdTestTask, "prvLcdTestTask", configMINIMAL_STACK_SIZE * 3U, NULL, tskIDLE_PRIORITY + 1, NULL);
 }
 /*-----------------------------------------------------------*/
 
@@ -120,7 +120,7 @@ static void prvLcdTestTask(void *pvParameters)
 									  sizeof(str) - 1,
 									  /* The time to wait for the next data if the buffer
 							  is empty. */
-									  pdMS_TO_TICKS(3000));
+									  pdMS_TO_TICKS(1000));
 		if (retval == 0)
 		{
 			serLcdPrintf(no_data_msg);

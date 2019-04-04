@@ -68,6 +68,7 @@ APP_SRC = \
 	bsp/uart.c \
 	bsp/iic.c \
 	bsp/gpio.c \
+	bsp/spi.c \
 	bsp/xilinx/uartns550/xuartns550.c \
 	bsp/xilinx/uartns550/xuartns550_g.c \
 	bsp/xilinx/uartns550/xuartns550_sinit.c \
@@ -93,6 +94,11 @@ APP_SRC = \
 	bsp/xilinx/iic/xiic_master.c \
 	bsp/xilinx/iic/xiic_intr.c \
 	bsp/xilinx/iic/xiic_stats.c \
+	bsp/xilinx/spi/xspi.c \
+	bsp/xilinx/spi/xspi_g.c \
+	bsp/xilinx/spi/xspi_sinit.c \
+	bsp/xilinx/spi/xspi_selftest.c \
+	bsp/xilinx/spi/xspi_options.c \
 	bsp/xilinx/common/xbasic_types.c \
 	bsp/xilinx/common/xil_io.c \
 	bsp/xilinx/common/xil_assert.c
@@ -106,6 +112,7 @@ INCLUDES = \
 	-I./bsp/xilinx/axiethernet \
 	-I./bsp/xilinx/uartns550 \
 	-I./bsp/xilinx/iic \
+	-I./bsp/xilinx/spi \
 	-I$(FREERTOS_SOURCE_DIR)/include \
 	-I../Common/include \
 	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V
@@ -152,8 +159,12 @@ ifeq ($(PROG),main_gpio)
 	CFLAGS += -DmainDEMO_TYPE=4
 	INCLUDES += -I./demo
 else
-ifeq ($(PROG),main_tcp)
+ifeq ($(PROG),main_spi)
 	CFLAGS += -DmainDEMO_TYPE=5
+	INCLUDES += -I./demo
+else
+ifeq ($(PROG),main_tcp)
+	CFLAGS += -DmainDEMO_TYPE=6
 	INCLUDES += \
 		-I./demo \
 		-I$(FREERTOS_TCP_SOURCE_DIR) \
@@ -181,6 +192,7 @@ ifeq ($(PROG),main_tcp)
 		demo/SimpleTCPEchoServer.c
 else
 	$(info unknown demo: $(PROG))
+endif
 endif
 endif
 endif
