@@ -55,6 +55,9 @@ extern void main_gpio(void);
 #elif mainDEMO_TYPE == 5
 #pragma message "Demo type 5: TCP"
 extern void main_tcp(void);
+#elif mainDEMO_TYPE == 6
+#pragma message "Demo type 5: SD"
+extern void main_sd(void);
 #else
 #error "Unsupported demo type"
 #endif
@@ -138,6 +141,10 @@ int main(void)
 #elif mainDEMO_TYPE == 5
 	{
 		main_tcp();
+	}
+#elif mainDEMO_TYPE == 6
+	{
+		main_sd();
 	}
 #endif
 

@@ -152,7 +152,6 @@ ifeq ($(PROG),main_drivers)
 	CFLAGS += -DmainDEMO_TYPE=3
 	DEMO_SRC += devices/vcnl4010.c
 	DEMO_SRC += devices/serLcd.c
-	DEMO_SRC += devices/sdmm.c
 	INCLUDES += -I./demo
 	INCLUDES += -I./devices
 else
@@ -188,7 +187,15 @@ ifeq ($(PROG),main_tcp)
 		demo/TCPEchoClient_SingleTasks.c \
 		demo/SimpleTCPEchoServer.c
 else
+ifeq ($(PROG),main_sd)
+	CFLAGS += -DmainDEMO_TYPE=6
+	DEMO_SRC += devices/ff.c
+	DEMO_SRC += devices/sdmm.c
+	INCLUDES += -I./demo
+	INCLUDES += -I./devices
+else
 	$(info unknown demo: $(PROG))
+endif
 endif
 endif
 endif

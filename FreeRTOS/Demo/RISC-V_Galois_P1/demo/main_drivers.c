@@ -249,7 +249,6 @@ static void prvIicTestTask0(void *pvParameters)
 	struct Vcnl4010_t sensor0;
 	uint16_t proximity = 0;
 	uint16_t ambient_light = 0;
-	uint8_t tx_buf[sbiSTREAM_BUFFER_LENGTH_BYTES] = {0};
 
 	printf("Starting prvIicTestTask0\r\n");
 	configASSERT(vcnl4010_init(&sensor0, &Iic0));

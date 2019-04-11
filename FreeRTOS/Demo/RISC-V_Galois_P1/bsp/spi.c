@@ -131,6 +131,7 @@ __attribute__((unused)) static void spi_init(struct SpiDriver *Spi, uint8_t devi
     /* Perform a self-test to ensure that the hardware was built correctly */
     configASSERT(XSpi_SelfTest(&Spi->Device) == XST_SUCCESS);
 
+#if !XPAR_SPI_USE_POLLING_MODE /* Interrup mode */
     /* Setup SPI status handler to indicate that SpiStatusHandler
     should be called when there is an interrupt */
     XSpi_SetStatusHandler(&Spi->Device, Spi,
@@ -139,12 +140,23 @@ __attribute__((unused)) static void spi_init(struct SpiDriver *Spi, uint8_t devi
     /* Setup interrupt system */
     configASSERT(PLIC_register_interrupt_handler(&Plic, plic_source_id,
                                                  (XInterruptHandler)XSpi_InterruptHandler, &Spi->Device) != 0);
-
+#endif /* XPAR_SPI_USE_POLLING_MODE */
+    
     /* Set device to master mode */
     configASSERT(XSpi_SetOptions(&Spi->Device, XSP_MASTER_OPTION | XSP_MANUAL_SSELECT_OPTION) == XST_SUCCESS);
 
     /* Start the SPI driver so that the device and interrupts are enabled */
     XSpi_Start(&Spi->Device);
+
+#if XPAR_SPI_USE_POLLING_MODE
+    /*
+	 * Disable Global interrupt to use polled mode operation
+	 */
+	XSpi_IntrGlobalDisable(&Spi->Device);
+
+    (void) plic_source_id;
+    (void) SpiStatusHandler;
+#endif
 }
 
 __attribute__((unused)) static int spi_transfer(struct SpiDriver *Spi, uint8_t slave_id, uint8_t *tx_buf, uint8_t *rx_buf, uint8_t len)
@@ -153,7 +165,7 @@ __attribute__((unused)) static int spi_transfer(struct SpiDriver *Spi, uint8_t s
     configASSERT(Spi->mutex != NULL);
     configASSERT(xSemaphoreTake(Spi->mutex, portMAX_DELAY) == pdTRUE);
 
-    /* Chooses the slave*/
+    /* Select the slave*/
     configASSERT(XSpi_SetSlaveSelect(&Spi->Device, slave_id) == XST_SUCCESS);
 
     /* Get task handle */
