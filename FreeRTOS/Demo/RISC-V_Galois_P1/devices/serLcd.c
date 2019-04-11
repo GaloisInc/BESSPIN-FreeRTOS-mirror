@@ -31,11 +31,9 @@ void serLcdPrintf(char *str)
 
 
 #if LCD_USE_SPI
-    printf("spi returnval: %i\r\n", spi1_transmit(LCD_SPI_SLAVE_IDX, cmd_mode, sizeof(cmd_mode)));
+    configASSERT(spi1_transmit(LCD_SPI_SLAVE_IDX, cmd_mode, sizeof(cmd_mode)) != -1);
     vTaskDelay(pdMS_TO_TICKS(100));
-    printf("spi returnval: %i\r\n", spi1_transmit(LCD_SPI_SLAVE_IDX, (uint8_t*)str, len));
-    //configASSERT(spi0_transmit(LCD_SPI_SLAVE_IDX, cmd_mode, sizeof(cmd_mode)) != -1);
-    //configASSERT(spi0_transmit(LCD_SPI_SLAVE_IDX, (uint8_t*)str, len) != -1);
+    configASSERT(spi1_transmit(LCD_SPI_SLAVE_IDX, (uint8_t*)str, len) != -1);
 #else
     configASSERT(iic_transmit(&LCD_DEFAULT_BUS, LCD_DEFAULT_ADDRESS, cmd_mode, sizeof(cmd_mode)) != -1);
     configASSERT(iic_transmit(&LCD_DEFAULT_BUS, LCD_DEFAULT_ADDRESS, (uint8_t *)str, len) != -1);

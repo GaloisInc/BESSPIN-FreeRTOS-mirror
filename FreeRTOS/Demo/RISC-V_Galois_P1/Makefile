@@ -152,6 +152,7 @@ ifeq ($(PROG),main_drivers)
 	CFLAGS += -DmainDEMO_TYPE=3
 	DEMO_SRC += devices/vcnl4010.c
 	DEMO_SRC += devices/serLcd.c
+	DEMO_SRC += devices/sdmm.c
 	INCLUDES += -I./demo
 	INCLUDES += -I./devices
 else
