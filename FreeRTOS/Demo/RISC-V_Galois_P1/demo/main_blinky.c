@@ -112,8 +112,12 @@ static QueueHandle_t xQueue = NULL;
 
 /*-----------------------------------------------------------*/
 
+int f(int i);
 void main_blinky(void)
 {
+	int i = 1;
+	i = f(i);
+	printf("i = %i\r\n", i);
 	/* Create the queue. */
 	xQueue = xQueueCreate(mainQUEUE_LENGTH, sizeof(uint32_t));
 	configASSERT(xQueue != NULL);

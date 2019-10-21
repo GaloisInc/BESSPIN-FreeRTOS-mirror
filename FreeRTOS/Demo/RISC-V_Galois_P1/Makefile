@@ -10,6 +10,7 @@ TARGET=$(CCPATH)riscv64-unknown-elf
 # Decide which compiler to use
 ifeq ($(USE_CLANG),yes)
 	CC		= clang --target=riscv32
+	CPP		= clang --target=riscv32
 	# LLVM doesn't support linking RISC-V files yet,
 	# so we have to use GCC linker to do so
 	LD		= $(TARGET)-gcc
@@ -21,6 +22,7 @@ ifeq ($(USE_CLANG),yes)
 	RANLIB	= llvm-ranlib
 else
 	CC		= $(TARGET)-gcc
+	CPP		= $(TARGET)-g++
 	LD		= $(CC)
 	OBJCOPY	= $(TARGET)-objcopy
 	OBJDUMP	= $(TARGET)-objdump
@@ -275,6 +277,9 @@ endif # main_blinky
 
 ARFLAGS=crsv
 
+CPP_SRC = demo/cpptest.cpp
+
+
 #
 # Define all object files.
 #
@@ -282,9 +287,10 @@ RTOS_OBJ = $(FREERTOS_SRC:.c=.o)
 APP_OBJ  = $(APP_SRC:.c=.o)
 PORT_OBJ = $(PORT_SRC:.c=.o)
 DEMO_OBJ = $(DEMO_SRC:.c=.o)
+CPP_OBJ = $(CPP_SRC:.cpp=.o)
 PORT_ASM_OBJ = $(PORT_ASM:.S=.o)
 CRT0_OBJ = $(CRT0:.S=.o)
-OBJS = $(CRT0_OBJ) $(PORT_ASM_OBJ) $(PORT_OBJ) $(RTOS_OBJ) $(DEMO_OBJ) $(APP_OBJ)
+OBJS = $(CRT0_OBJ) $(PORT_ASM_OBJ) $(PORT_OBJ) $(RTOS_OBJ) $(DEMO_OBJ) $(APP_OBJ) $(CPP_OBJ)
 
 LDFLAGS	 = -T link.ld -nostartfiles -nostdlib $(ARCH) $(ABI)
 LIBS	 =  -lc -lgcc
@@ -298,6 +304,10 @@ $(info ARFLAGS=$(ARFLAGS))
 %.o: %.c
 	@echo "    CC $<"
 	@$(CC) -c $(CFLAGS) -o $@ $<
+
+%.o: %.cpp
+	@echo "    C++ $<"
+	@$(CPP) -c $(CFLAGS) -o $@ $<
 
 %.o: %.S
 	@echo "    CC $<"
