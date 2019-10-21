@@ -42,8 +42,12 @@ FREERTOS_PLUS_SOURCE_DIR = ../../../FreeRTOS-Plus/Source
 FREERTOS_TCP_SOURCE_DIR = $(FREERTOS_PLUS_SOURCE_DIR)/FreeRTOS-Plus-TCP
 FREERTOS_PROTOCOLS_DIR = ./protocols
 
-WARNINGS= -Werror -Wall -Wextra -Wshadow -Wpointer-arith -Wbad-function-cast -Wcast-align -Wsign-compare \
-		-Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wunused
+WARNINGS = -Werror -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-align -Wsign-compare \
+		-Waggregate-return -Wmissing-declarations -Wunused
+ 
+C_WARNINGS = -Wbad-function-cast -Wmissing-prototypes -Wstrict-prototypes
+
+CPP_WARNINGS = 
 
 FREERTOS_SRC = \
 	$(FREERTOS_SOURCE_DIR)/croutine.c \
@@ -71,8 +75,11 @@ ASFLAGS  += -g $(ARCH) $(ABI)  -Wa,-Ilegacy \
 	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V/chip_specific_extensions/RV32I_CLINT_no_extensions \
 	-DportasmHANDLE_INTERRUPT=external_interrupt_handler
 
-CFLAGS = $(WARNINGS) $(INCLUDES)
+CFLAGS = $(WARNINGS) $(C_WARNINGS) $(INCLUDES)
 CFLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS)
+
+CPPFLAGS = $(WARNINGS) $(CPP_WARNINGS) $(INCLUDES)
+CPPLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS)
 
 DEMO_SRC = main.c \
 	demo/$(PROG).c
@@ -307,7 +314,7 @@ $(info ARFLAGS=$(ARFLAGS))
 
 %.o: %.cpp
 	@echo "    C++ $<"
-	@$(CPP) -c $(CFLAGS) -o $@ $<
+	@$(CPP) -c $(CPPLAGS) -o $@ $<
 
 %.o: %.S
 	@echo "    CC $<"
