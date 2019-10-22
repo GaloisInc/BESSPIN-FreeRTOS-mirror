@@ -27,13 +27,13 @@ extern "C" {
 }
 
 void sd_demo() {
-  printf("Initializing SD card...");
+  printf("Initializing SD card...\r\n");
 
   if (!SD.begin(4)) {
-    printf("initialization failed!");
+    printf("initialization failed!\r\n");
     while (1);
   }
-  printf("initialization done.");
+  printf("initialization done.\r\n");
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
@@ -41,20 +41,19 @@ void sd_demo() {
 
   // if the file opened okay, write to it:
   if (myFile) {
-    printf("Writing to test.txt...");
-    //myFile.write("testing 1, 2, 3.");
+    printf("Writing to test.txt...\r\n");
     const char * text = "testing 1, 2, 3.";
     myFile.write((uint8_t*)text, strlen(text));
     // close the file:
     myFile.close();
-    printf("done.");
+    printf("done.\r\n");
   } else {
     // if the file didn't open, print an error:
-    printf("error opening test.txt");
+    printf("error opening test.txt\r\n");
   }
 
   // re-open the file for reading:
-  myFile = SD.open("test.txt");
+  myFile = SD.open("test.txt\r\n");
   if (myFile) {
     printf("test.txt:");
 
@@ -66,7 +65,8 @@ void sd_demo() {
     myFile.close();
   } else {
     // if the file didn't open, print an error:
-    printf("error opening test.txt");
+    printf("error opening test.txt\r\n");
   }
+  printf("Done!\r\n");
 }
 
