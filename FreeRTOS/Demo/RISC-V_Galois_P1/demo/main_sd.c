@@ -61,6 +61,7 @@ void main_sd(void)
 
 
 int f(int);
+void sd_demo(void);
 /**
  * This tasks controls GPIO and the connected motors
  */
@@ -71,7 +72,7 @@ static void prvSdTestTask0(void *pvParameters)
     int i = 0;
     printf("%i\r\n", f(i));
 
-    
+    sd_demo();
     // Enter endless loop to be consistent with other tests
     for (;;)
     {

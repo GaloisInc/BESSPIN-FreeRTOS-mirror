@@ -19,20 +19,26 @@
  */
 #include "Sd2Card.h"
 
-int millis(void) {
-  return 42;
+extern "C" {
+#include "spi.h"
+#include "task.h"
+}
+
+unsigned int millis(void) {
+  return xTaskGetTickCount();
 }
 
 //------------------------------------------------------------------------------
 // functions for hardware SPI
 /** Send a byte to the card */
 static void spiSend(uint8_t b) {
-  //SDCARD_SPI.transfer(b);
+  configASSERT(XSpi_Transfer(&Spi1.Device, &b, NULL, 1) == 0);
 }
 /** Receive a byte from the card */
-static  uint8_t spiRec(void) {
-  //return SDCARD_SPI.transfer(0xFF);
-  return 0;
+static uint8_t spiRec(void) {
+  uint8_t rx = 0xFF;
+  configASSERT(XSpi_Transfer(&Spi1.Device, &rx, &rx, 1) == 0);
+  return rx;
 }
 //------------------------------------------------------------------------------
 // send command and return error code.  Return zero for OK
@@ -93,11 +99,11 @@ uint32_t Sd2Card::cardSize(void) {
 static uint8_t chip_select_asserted = 0;
 
 void Sd2Card::chipSelectHigh(void) {
-  //digitalWrite(chipSelectPin_, HIGH);
+  configASSERT(XSpi_SetSlaveSelect(&Spi1.Device, 0) == 0);
 }
 //------------------------------------------------------------------------------
 void Sd2Card::chipSelectLow(void) {
-  //digitalWrite(chipSelectPin_, LOW);
+  configASSERT(XSpi_SetSlaveSelect(&Spi1.Device, 1) == 0);
 }
 //------------------------------------------------------------------------------
 /** Erase a range of blocks.

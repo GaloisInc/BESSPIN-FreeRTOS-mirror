@@ -252,7 +252,8 @@ ifeq ($(PROG),main_sd)
 			   SD/src/utility/Sd2Card.cpp \
 			   SD/src/utility/SdFile.cpp \
 			   SD/src/utility/SdVolume.cpp \
-			   demo/cpptest.cpp
+			   demo/cpptest.cpp \
+			   SD/src/SdDemo.cpp
 	INCLUDES += -I./SD/src
 else
 ifeq ($(PROG),main_uart)
