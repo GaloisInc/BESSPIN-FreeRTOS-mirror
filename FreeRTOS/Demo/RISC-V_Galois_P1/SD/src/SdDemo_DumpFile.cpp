@@ -19,21 +19,29 @@ void sd_demo() {
     // don't do anything more:
     while (1);
   }
+  
   printf("card initialized.\r\n");
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  File dataFile = SD.open("datalog.txt");
+  File dataFile = SD.open("busybox.txt");
 
   // if the file is available, write to it:
   if (dataFile) {
+    uint8_t cnt = 0;
     while (dataFile.available()) {
-      printf("%s",dataFile.read());
+      if (cnt == 0) {
+        printf("\r\n");
+      }
+      cnt++;
+      printf("%c",dataFile.read());
     }
+    printf("Closing file\r\n");
     dataFile.close();
   }
   // if the file isn't open, pop up an error:
   else {
-    printf("error opening datalog.txt");
+    printf("error opening file");
   }
+  printf("Done!\r\n");
 }

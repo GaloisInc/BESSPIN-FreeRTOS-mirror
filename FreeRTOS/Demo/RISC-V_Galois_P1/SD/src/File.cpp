@@ -14,13 +14,19 @@
 
 #include <SD.h>
 
+extern "C" {
+      void *pvPortMalloc(size_t xWantedSize );
+      void vPortFree( void *pv );
+}
+
+
 /* for debugging file open/close leaks
    uint8_t nfilecount=0;
 */
 
 File::File(SdFile f, const char *n) {
   // oh man you are kidding me, new() doesnt exist? Ok we do it by hand!
-  _file = (SdFile *)malloc(sizeof(SdFile)); 
+  _file = (SdFile *)pvPortMalloc(sizeof(SdFile)); 
   if (_file) {
     memcpy(_file, &f, sizeof(SdFile));
     
@@ -127,7 +133,7 @@ uint32_t File::size() {
 void File::close() {
   if (_file) {
     _file->close();
-    free(_file); 
+    vPortFree(_file); 
     _file = 0;
 
     /* for debugging file open/close leaks
