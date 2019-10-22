@@ -78,7 +78,6 @@ ASFLAGS  += -g $(ARCH) $(ABI)  -Wa,-Ilegacy \
 	-DportasmHANDLE_INTERRUPT=external_interrupt_handler
 
 CFLAGS = $(WARNINGS) $(C_WARNINGS) $(INCLUDES)
-
 CPPFLAGS = $(WARNINGS) $(CPP_WARNINGS) $(INCLUDES)
 
 DEMO_SRC = main.c \
@@ -248,12 +247,13 @@ else
 ifeq ($(PROG),main_sd)
 	CFLAGS += -DmainDEMO_TYPE=6
 	CPPLAGS += -DmainDEMO_TYPE=6
-	#DEMO_SRC += devices/sdmm.c
-	#DEMO_SRC += devices/ff.c
-	#DEMO_SRC += devices/ffsystem.c
-	#DEMO_SRC += devices/ffunicode.c
-	CPP_SRC += devices/SdFat/SdSpi.cpp
-	INCLUDES += -I./devices/SdFat
+	CPP_SRC += SD/src/SD.cpp \
+			   SD/src/File.cpp \
+			   SD/src/utility/Sd2Card.cpp \
+			   SD/src/utility/SdFile.cpp \
+			   SD/src/utility/SdVolume.cpp \
+			   demo/cpptest.cpp
+	INCLUDES += -I./SD/src
 else
 ifeq ($(PROG),main_uart)
 	CFLAGS += -DmainDEMO_TYPE=7
@@ -287,7 +287,6 @@ endif # main_blinky
 ARFLAGS=crsv
 
 CFLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)
-
 CPPLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)
 
 #

@@ -23,7 +23,7 @@
  * \file
  * Sd2Card class
  */
-#include "Sd2PinMap.h"
+
 #include "SdInfo.h"
 /** Set SCK to max rate of F_CPU/2. See Sd2Card::setSckRate(). */
 uint8_t const SPI_FULL_SPEED = 0;
@@ -31,78 +31,9 @@ uint8_t const SPI_FULL_SPEED = 0;
 uint8_t const SPI_HALF_SPEED = 1;
 /** Set SCK rate to F_CPU/8. Sd2Card::setSckRate(). */
 uint8_t const SPI_QUARTER_SPEED = 2;
-/**
- * USE_SPI_LIB: if set, use the SPI library bundled with Arduino IDE, otherwise
- * run with a standalone driver for AVR.
- */
-#define USE_SPI_LIB
-/**
- * Define MEGA_SOFT_SPI non-zero to use software SPI on Mega Arduinos.
- * Pins used are SS 10, MOSI 11, MISO 12, and SCK 13.
- *
- * MEGA_SOFT_SPI allows an unmodified Adafruit GPS Shield to be used
- * on Mega Arduinos.  Software SPI works well with GPS Shield V1.1
- * but many SD cards will fail with GPS Shield V1.0.
- */
-#define MEGA_SOFT_SPI 0
-//------------------------------------------------------------------------------
-#if MEGA_SOFT_SPI && (defined(__AVR_ATmega1280__)||defined(__AVR_ATmega2560__))
-#define SOFTWARE_SPI
-#endif  // MEGA_SOFT_SPI
 //------------------------------------------------------------------------------
 // SPI pin definitions
-//
-#ifndef SOFTWARE_SPI
-// hardware pin defs
-
-// include pins_arduino.h or variant.h depending on architecture, via Arduino.h
-#include <Arduino.h>
-
-/**
- * SD Chip Select pin
- *
- * Warning if this pin is redefined the hardware SS will pin will be enabled
- * as an output by init().  An avr processor will not function as an SPI
- * master unless SS is set to output mode.
- */
-#ifndef SDCARD_SS_PIN
-/** The default chip select pin for the SD card is SS. */
-uint8_t const  SD_CHIP_SELECT_PIN = SS;
-#else
-uint8_t const  SD_CHIP_SELECT_PIN = SDCARD_SS_PIN;
-#endif
-
-// The following three pins must not be redefined for hardware SPI,
-// so ensure that they are taken from pins_arduino.h or variant.h, depending on architecture.
-#ifndef SDCARD_MOSI_PIN
-/** SPI Master Out Slave In pin */
-uint8_t const  SPI_MOSI_PIN = MOSI;
-/** SPI Master In Slave Out pin */
-uint8_t const  SPI_MISO_PIN = MISO;
-/** SPI Clock pin */
-uint8_t const  SPI_SCK_PIN = SCK;
-#else
-uint8_t const  SPI_MOSI_PIN = SDCARD_MOSI_PIN;
-uint8_t const  SPI_MISO_PIN = SDCARD_MISO_PIN;
-uint8_t const  SPI_SCK_PIN = SDCARD_SCK_PIN;
-#endif
-
-/** optimize loops for hardware SPI */
-#ifndef USE_SPI_LIB
-#define OPTIMIZE_HARDWARE_SPI
-#endif
-
-#else  // SOFTWARE_SPI
-// define software SPI pins so Mega can use unmodified GPS Shield
-/** SPI chip select pin */
-uint8_t const SD_CHIP_SELECT_PIN = 10;
-/** SPI Master Out Slave In pin */
-uint8_t const SPI_MOSI_PIN = 11;
-/** SPI Master In Slave Out pin */
-uint8_t const SPI_MISO_PIN = 12;
-/** SPI Clock pin */
-uint8_t const SPI_SCK_PIN = 13;
-#endif  // SOFTWARE_SPI
+// (not needed)
 //------------------------------------------------------------------------------
 /** Protect block zero from write if nonzero */
 #define SD_PROTECT_BLOCK_ZERO 1
@@ -190,16 +121,15 @@ class Sd2Card {
    * Initialize an SD flash memory card with default clock rate and chip
    * select pin.  See sd2Card::init(uint8_t sckRateID, uint8_t chipSelectPin).
    */
-  uint8_t init(void) {
-    return init(SPI_FULL_SPEED, SD_CHIP_SELECT_PIN);
-  }
+  uint8_t init(void);
   /**
    * Initialize an SD flash memory card with the selected SPI clock rate
    * and the default SD chip select pin.
    * See sd2Card::init(uint8_t sckRateID, uint8_t chipSelectPin).
    */
   uint8_t init(uint8_t sckRateID) {
-    return init(sckRateID, SD_CHIP_SELECT_PIN);
+    //return init(sckRateID, SD_CHIP_SELECT_PIN);
+    return init();
   }
   uint8_t init(uint8_t sckRateID, uint8_t chipSelectPin);
   void partialBlockRead(uint8_t value);
@@ -223,9 +153,6 @@ class Sd2Card {
   }
   void readEnd(void);
   uint8_t setSckRate(uint8_t sckRateID);
-#ifdef USE_SPI_LIB
-  uint8_t setSpiClock(uint32_t clock);
-#endif
   /** Return the card type: SD V1, SD V2 or SDHC */
   uint8_t type(void) const {return type_;}
   uint8_t writeBlock(uint32_t blockNumber, const uint8_t* src);
@@ -234,7 +161,6 @@ class Sd2Card {
   uint8_t writeStop(void);
  private:
   uint32_t block_;
-  uint8_t chipSelectPin_;
   uint8_t errorCode_;
   uint8_t inBlock_;
   uint16_t offset_;

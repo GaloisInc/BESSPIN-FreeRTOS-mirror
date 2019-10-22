@@ -27,8 +27,9 @@
 #include <avr/pgmspace.h>
 #endif
 #include "Sd2Card.h"
+#include <string.h>
 #include "FatStructs.h"
-#include <Print.h>
+//#include <Print.h>
 //------------------------------------------------------------------------------
 /**
  * Allow use of deprecated functions if non-zero
@@ -134,7 +135,7 @@ uint16_t const FAT_DEFAULT_TIME = (1 << 11);
  * \class SdFile
  * \brief Access FAT16 and FAT32 files on SD and SDHC cards.
  */
-class SdFile : public Print {
+class SdFile {//: public Print {
  public:
   /** Create an instance of SdFile. */
   SdFile(void) : type_(FAT_FILE_TYPE_CLOSED) {}

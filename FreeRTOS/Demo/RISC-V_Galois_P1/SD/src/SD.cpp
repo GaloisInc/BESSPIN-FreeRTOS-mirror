@@ -344,7 +344,7 @@ boolean SDClass::begin(uint8_t csPin) {
     Return true if initialization succeeds, false otherwise.
 
    */
-  return card.init(SPI_HALF_SPEED, csPin) &&
+  return card.init() &&
          volume.init(card) &&
          root.openRoot(volume);
 }
@@ -352,8 +352,7 @@ boolean SDClass::begin(uint8_t csPin) {
 boolean SDClass::begin(uint32_t clock, uint8_t csPin) {
   if(root.isOpen()) root.close();
 
-  return card.init(SPI_HALF_SPEED, csPin) &&
-         card.setSpiClock(clock) &&
+  return card.init() &&
          volume.init(card) &&
          root.openRoot(volume);
 }

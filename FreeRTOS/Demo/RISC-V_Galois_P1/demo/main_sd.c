@@ -60,15 +60,16 @@ void main_sd(void)
 }
 
 
-void sd_select(void);
-void sd_unselect(void);
-
+int f(int);
 /**
  * This tasks controls GPIO and the connected motors
  */
 static void prvSdTestTask0(void *pvParameters)
 {
     (void)pvParameters;
+
+    int i = 0;
+    printf("%i\r\n", f(i));
 
     
     // Enter endless loop to be consistent with other tests

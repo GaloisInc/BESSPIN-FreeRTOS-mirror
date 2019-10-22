@@ -61,15 +61,15 @@ size_t File::write(uint8_t val) {
 size_t File::write(const uint8_t *buf, size_t size) {
   size_t t;
   if (!_file) {
-    setWriteError();
+    //setWriteError();
     return 0;
   }
-  _file->clearWriteError();
+  //_file->clearWriteError();
   t = _file->write(buf, size);
-  if (_file->getWriteError()) {
-    setWriteError();
-    return 0;
-  }
+  //if (_file->getWriteError()) {
+    //setWriteError();
+  //  return 0;
+  //}
   return t;
 }
 

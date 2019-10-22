@@ -15,17 +15,17 @@
 #ifndef __SD_H__
 #define __SD_H__
 
-#include <Arduino.h>
-
 #include "utility/SdFat.h"
-#include "utility/SdFatUtil.h"
+#include <string>
+#define boolean bool
+#define String std::string
 
 #define FILE_READ O_READ
 #define FILE_WRITE (O_READ | O_WRITE | O_CREAT | O_APPEND)
 
 namespace SDLib {
 
-class File : public Stream {
+class File {//: public Stream {
  private:
   char _name[13]; // our name
   SdFile *_file;  // underlying file pointer
@@ -33,12 +33,12 @@ class File : public Stream {
 public:
   File(SdFile f, const char *name);     // wraps an underlying SdFile
   File(void);      // 'empty' constructor
-  virtual size_t write(uint8_t);
-  virtual size_t write(const uint8_t *buf, size_t size);
-  virtual int read();
-  virtual int peek();
-  virtual int available();
-  virtual void flush();
+  size_t write(uint8_t);
+  size_t write(const uint8_t *buf, size_t size);
+  int read();
+  int peek();
+  int available();
+  void flush();
   int read(void *buf, uint16_t nbyte);
   boolean seek(uint32_t pos);
   uint32_t position();
@@ -51,7 +51,7 @@ public:
   File openNextFile(uint8_t mode = O_RDONLY);
   void rewindDirectory(void);
   
-  using Print::write;
+  //using Print::write;
 };
 
 class SDClass {
@@ -67,7 +67,7 @@ private:
 public:
   // This needs to be called to set up the connection to the SD card
   // before other methods are used.
-  boolean begin(uint8_t csPin = SD_CHIP_SELECT_PIN);
+  boolean begin(uint8_t csPin = 0);
   boolean begin(uint32_t clock, uint8_t csPin);
   
   //call this when a card is removed. It will allow you to insert and initialise a new card.
