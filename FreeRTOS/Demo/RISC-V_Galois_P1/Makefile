@@ -253,7 +253,7 @@ ifeq ($(PROG),main_sd)
 			   SD/src/utility/SdFile.cpp \
 			   SD/src/utility/SdVolume.cpp \
 			   demo/cpptest.cpp \
-			   SD/src/SdDemo.cpp
+			   SD/src/SdDemo_DumpFile.cpp
 	INCLUDES += -I./SD/src
 else
 ifeq ($(PROG),main_uart)
