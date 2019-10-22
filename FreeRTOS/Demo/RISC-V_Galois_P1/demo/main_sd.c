@@ -35,10 +35,6 @@
 #include "task.h"
 #include "bsp.h"
 
-#include "ff.h" /* Declarations of FatFs API */
-#include "diskio.h"
-
-
 void main_sd(void);
 void print_array(char *name, uint8_t *buf, size_t len);
 
@@ -63,6 +59,10 @@ void main_sd(void)
     xTaskCreate(prvSdTestTask0, "prvSdTestTask0", configMINIMAL_STACK_SIZE * 3U, NULL, tskIDLE_PRIORITY + 1, NULL);
 }
 
+
+void sd_select(void);
+void sd_unselect(void);
+
 /**
  * This tasks controls GPIO and the connected motors
  */
@@ -70,43 +70,6 @@ static void prvSdTestTask0(void *pvParameters)
 {
     (void)pvParameters;
 
-    FATFS FatFs; /* FatFs work area needed for each volume */
-    FIL Fil;     /* File object needed for each open file */
-    FILINFO FilInfo;
-    UINT bw;
-    DIR dp;
-    uint8_t res;
-
-    printf("prvSdTestTask0 starting...\r\n");
-
-    res = f_mount(&FatFs, "", 0);
-    printf("f_mount result = %i\r\n", res); /* Give a work area to the default drive */
-
-    if (!res) {
-        if (f_open(&Fil, "log.txt", FA_WRITE | FA_CREATE_ALWAYS) == FR_OK) {	/* Create a new file */
-            f_write(&Fil, "It works!\r\n", 11, &bw);	/* Write data to the file */
-            f_close(&Fil);								/* Close the file */
-            if (bw == 11) {		/* was data written well */
-                printf("data written sucessfully\r\n");
-            } else {
-                printf("data write error!\r\n");
-            }
-        } else {
-            printf("f_mount error!\r\n");
-        }
-        // Open Directory and display first filename
-        res = f_opendir(&dp, "/");
-        printf("f_opendir res = %u\r\n", res);
-
-        res = f_readdir(&dp, &FilInfo);
-        printf("f_readdir res = %u\r\n", res);
-        printf("filename: %s\r\n", FilInfo.fname);
-
-        res = f_closedir(&dp);
-        printf("f_closedir res = %u\r\n", res);
-    }
-
-    printf("prvSdTestTask0 terminating, exit code = %u\r\n", res);
     
     // Enter endless loop to be consistent with other tests
     for (;;)

@@ -49,6 +49,8 @@ C_WARNINGS = -Wbad-function-cast -Wmissing-prototypes -Wstrict-prototypes
 
 CPP_WARNINGS = 
 
+CPP_SRC = 
+
 FREERTOS_SRC = \
 	$(FREERTOS_SOURCE_DIR)/croutine.c \
 	$(FREERTOS_SOURCE_DIR)/list.c \
@@ -76,10 +78,8 @@ ASFLAGS  += -g $(ARCH) $(ABI)  -Wa,-Ilegacy \
 	-DportasmHANDLE_INTERRUPT=external_interrupt_handler
 
 CFLAGS = $(WARNINGS) $(C_WARNINGS) $(INCLUDES)
-CFLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS)
 
 CPPFLAGS = $(WARNINGS) $(CPP_WARNINGS) $(INCLUDES)
-CPPLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS)
 
 DEMO_SRC = main.c \
 	demo/$(PROG).c
@@ -247,11 +247,13 @@ ifeq ($(PROG),main_udp)
 else
 ifeq ($(PROG),main_sd)
 	CFLAGS += -DmainDEMO_TYPE=6
-	DEMO_SRC += devices/sdmm.c
-	DEMO_SRC += devices/ff.c
-	DEMO_SRC += devices/ffsystem.c
-	DEMO_SRC += devices/ffunicode.c
-	INCLUDES += -I./devices
+	CPPLAGS += -DmainDEMO_TYPE=6
+	#DEMO_SRC += devices/sdmm.c
+	#DEMO_SRC += devices/ff.c
+	#DEMO_SRC += devices/ffsystem.c
+	#DEMO_SRC += devices/ffunicode.c
+	CPP_SRC += devices/SdFat/SdSpi.cpp
+	INCLUDES += -I./devices/SdFat
 else
 ifeq ($(PROG),main_uart)
 	CFLAGS += -DmainDEMO_TYPE=7
@@ -284,8 +286,9 @@ endif # main_blinky
 
 ARFLAGS=crsv
 
-CPP_SRC = demo/cpptest.cpp
+CFLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)
 
+CPPLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)
 
 #
 # Define all object files.
