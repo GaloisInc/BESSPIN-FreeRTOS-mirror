@@ -172,6 +172,8 @@ uint8_t Sd2Card::init() {
   unsigned int t0 = millis();
   uint32_t arg;
 
+  chipSelectHigh();
+
   // must supply min of 74 clock cycles with CS high.
   for (uint8_t i = 0; i < 10; i++) spiSend(0XFF);
 

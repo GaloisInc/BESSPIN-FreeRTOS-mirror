@@ -231,7 +231,7 @@ void SdFile::ls(uint8_t flags, uint8_t indent) {
       printf(" ");
       printf("%u",p->fileSize);
     }
-    printf("");
+    printf("\r\n");
 
     // list subdirectory content if requested
     if ((flags & LS_R) && DIR_IS_SUBDIR(p)) {
@@ -598,7 +598,7 @@ void SdFile::printDirName(const dir_t& dir, uint8_t width) {
       printf(".");
       w++;
     }
-    printf("%u",dir.name[i]);
+    printf("%c",dir.name[i]);
     w++;
   }
   if (DIR_IS_SUBDIR(&dir)) {
