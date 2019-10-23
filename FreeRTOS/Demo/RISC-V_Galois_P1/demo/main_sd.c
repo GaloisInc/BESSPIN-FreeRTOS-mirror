@@ -95,12 +95,12 @@ static void prvSdTestTask0(void *pvParameters)
         printf("#%u: %s written %u bytes\r\n", cnt, log1, r);
         r = sdlib_write_to_file(log2, (const uint8_t*)entry2, strlen(entry2));
         printf("#%u: %s written %u bytes\r\n", cnt, log2, r);
-        //vTaskDelay(pdMS_TO_TICKS(100));
         r = sdlib_read_from_file(log1, sd_test_buf, sizeof(sd_test_buf));
         printf("#%u: %s read %u bytes\r\n", cnt, log1, r);
         r = sdlib_read_from_file(log2, sd_test_buf, sizeof(sd_test_buf));
         printf("#%u: %s read %u bytes\r\n", cnt, log2, r);
         cnt++;
-        //vTaskDelay(pdMS_TO_TICKS(100));
+        // Include small delay so we can show stats
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
