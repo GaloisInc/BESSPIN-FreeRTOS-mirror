@@ -21,6 +21,7 @@
 #include <cstdio>
 //------------------------------------------------------------------------------
 #if USE_RTC_CLOCK
+#pragma message "Using RTC clock for SDFAT time"
 extern "C" {
   #include "ds1338rtc.h"
 }

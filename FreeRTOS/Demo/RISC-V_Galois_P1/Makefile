@@ -252,14 +252,33 @@ ifeq ($(PROG),main_sd)
 			   SD/src/utility/Sd2Card.cpp \
 			   SD/src/utility/SdFile.cpp \
 			   SD/src/utility/SdVolume.cpp \
-			   SD/src/SDLib.cpp \
-			   SD/src/SdDemo_ReadWrite.cpp
-#			   SD/src/SdDemo_DumpFile.cpp
-#			   SD/src/SdDemo_CardInfo.cpp
+			   SD/src/SDLib.cpp
+SD_EXAMPLE ?= CardInfo
+USE_RTC_CLOCK ?= 0
+$(info SD_EXAMPLE=${SD_EXAMPLE})
+ifeq ($(SD_EXAMPLE),ReadWrite)
+	CPP_SRC += SD/examples/SdDemo_ReadWrite.cpp
+else
+ifeq ($(SD_EXAMPLE),DumpFile)
+	CPP_SRC += SD/examples/SdDemo_DumpFile.cpp
+else
+ifeq ($(SD_EXAMPLE),CardInfo)
+	CPP_SRC += SD/examples/SdDemo_CardInfo.cpp
+else
+ifeq ($(SD_EXAMPLE),StressTest)
+	DEMO_SRC += SD/examples/SdDemo_StressTest.c
+else
+$(error unknown SD_EXAMPLE: $(SD_EXAMPLE))
+endif
+endif
+endif
+endif
+
 	INCLUDES += -I./SD/src
 ifeq ($(USE_RTC_CLOCK),1)
 # Below includes for RTC clock (SD FAT time)
 	CFLAGS += -DUSE_RTC_CLOCK=1
+	CPPLAGS += -DUSE_RTC_CLOCK=1
 	INCLUDES += -I./devices
 	DEMO_SRC += devices/ds1338rtc.c
 endif # USE_RTC_CLOCK

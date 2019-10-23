@@ -56,51 +56,23 @@ void print_array(char *name, uint8_t *buf, size_t len)
 
 void main_sd(void)
 {
-    xTaskCreate(prvSdTestTask0, "prvSdTestTask0", configMINIMAL_STACK_SIZE * 3U, NULL, tskIDLE_PRIORITY + 1, NULL);
+    xTaskCreate(prvSdTestTask0, "prvSdTestTask0", configMINIMAL_STACK_SIZE * 10U, NULL, tskIDLE_PRIORITY + 1, NULL);
 }
 
 
-#include "SDLib.h"
-uint8_t sd_test_buf[2048] = {0};
+
+void sd_demo(void);
+
 /**
  * This tasks controls GPIO and the connected motors
  */
 static void prvSdTestTask0(void *pvParameters)
 {
     (void)pvParameters;
-    const char *log1 = "test0.log";
-    const char *log2 = "test1.log";
+    sd_demo();
 
-    const char * entry1 =
-        "hello "
-        "test01xxxxaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbccccccccccccccccdddddddddddd"
-        "ddddeeeeeeeeeeeeeeeeffffffffffffffffgggggggggggggggghhhhhhhhhhhhhhhhii"
-        "iiiiiiiiiiiiiijjjjjjjjjjjjjjjjkkkkkkkkkkkkkkkkllllllllllllllllmmmmmmmm"
-        "mmmmmmmmnnnnnnnnnnnnnnnnooooooooooooooo"; // 256 chars including final \0
-
-    const char * entry2 =
-        "hello "
-        "test01xxxxaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbccccccccccccccccdddddddddddd"
-        "ddddeeeeeeeeeeeeeeeeffffffffffffffffgggggggggggggggghhhhhhhhhhhhhhhhii"
-        "iiiiiiiiiiiiiijjjjjjjjjjjjjjjjkkkkkkkkkkkkkkkkllllllllllllllllmmmmmmmm"
-        "mmmmmmmmnnnnnnnnnnnnnnnnooooooooooooooo"; // 256 chars including final \0
-
-    configASSERT(sdlib_initialize());
-
-    size_t r;
-    uint16_t cnt = 1;
     for (;;)
     {   
-        r = sdlib_write_to_file(log1, (const uint8_t*)entry1, strlen(entry1));
-        printf("#%u: %s written %u bytes\r\n", cnt, log1, r);
-        r = sdlib_write_to_file(log2, (const uint8_t*)entry2, strlen(entry2));
-        printf("#%u: %s written %u bytes\r\n", cnt, log2, r);
-        r = sdlib_read_from_file(log1, sd_test_buf, sizeof(sd_test_buf));
-        printf("#%u: %s read %u bytes\r\n", cnt, log1, r);
-        r = sdlib_read_from_file(log2, sd_test_buf, sizeof(sd_test_buf));
-        printf("#%u: %s read %u bytes\r\n", cnt, log2, r);
-        cnt++;
-        // Include small delay so we can show stats
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
