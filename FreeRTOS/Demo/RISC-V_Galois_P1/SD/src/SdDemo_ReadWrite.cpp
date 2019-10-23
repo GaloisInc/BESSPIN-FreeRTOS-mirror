@@ -26,6 +26,8 @@ extern "C" {
     void sd_demo(void);
 }
 
+const char *filename = "test.txt";
+
 void sd_demo() {
   printf("Initializing SD card...\r\n");
 
@@ -37,7 +39,7 @@ void sd_demo() {
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  myFile = SD.open("test.txt", FILE_WRITE);
+  myFile = SD.open(filename, FILE_WRITE);
 
   // if the file opened okay, write to it:
   if (myFile) {
@@ -53,9 +55,9 @@ void sd_demo() {
   }
 
   // re-open the file for reading:
-  myFile = SD.open("test.txt\r\n");
+  myFile = SD.open(filename);
   if (myFile) {
-    printf("test.txt:");
+    printf("%s",filename);
 
     // read from the file until there's nothing else in it:
     while (myFile.available()) {
@@ -67,6 +69,6 @@ void sd_demo() {
     // if the file didn't open, print an error:
     printf("error opening test.txt\r\n");
   }
-  printf("Done!\r\n");
+  printf("\r\nDone!\r\n");
 }
 

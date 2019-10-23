@@ -36,7 +36,7 @@ void sd_demo() {
       cnt++;
       printf("%c",dataFile.read());
     }
-    printf("Closing file\r\n");
+    printf("\r\nClosing file\r\n");
     dataFile.close();
   }
   // if the file isn't open, pop up an error:
