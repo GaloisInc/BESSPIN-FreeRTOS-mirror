@@ -60,37 +60,47 @@ void main_sd(void)
 }
 
 
-
-void sd_demo(void);
-//#include "SDLib.h"
+#include "SDLib.h"
+uint8_t sd_test_buf[2048] = {0};
 /**
  * This tasks controls GPIO and the connected motors
  */
 static void prvSdTestTask0(void *pvParameters)
 {
     (void)pvParameters;
-    // const char *filename = "01.log";
+    const char *log1 = "test0.log";
+    const char *log2 = "test1.log";
 
-    // const char * entry =
-    //     "hello "
-    //     "test01xxxxaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbccccccccccccccccdddddddddddd"
-    //     "ddddeeeeeeeeeeeeeeeeffffffffffffffffgggggggggggggggghhhhhhhhhhhhhhhhii"
-    //     "iiiiiiiiiiiiiijjjjjjjjjjjjjjjjkkkkkkkkkkkkkkkkllllllllllllllllmmmmmmmm"
-    //     "mmmmmmmmnnnnnnnnnnnnnnnnooooooooooooooo"; // 256 chars including final \0
+    const char * entry1 =
+        "hello "
+        "test01xxxxaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbccccccccccccccccdddddddddddd"
+        "ddddeeeeeeeeeeeeeeeeffffffffffffffffgggggggggggggggghhhhhhhhhhhhhhhhii"
+        "iiiiiiiiiiiiiijjjjjjjjjjjjjjjjkkkkkkkkkkkkkkkkllllllllllllllllmmmmmmmm"
+        "mmmmmmmmnnnnnnnnnnnnnnnnooooooooooooooo"; // 256 chars including final \0
 
-    // uint8_t buf[512] = {0};
-    sd_demo();
-    // Enter endless loop to be consistent with other tests
-    // size_t r;
-    // uint16_t cnt = 1;
+    const char * entry2 =
+        "hello "
+        "test01xxxxaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbccccccccccccccccdddddddddddd"
+        "ddddeeeeeeeeeeeeeeeeffffffffffffffffgggggggggggggggghhhhhhhhhhhhhhhhii"
+        "iiiiiiiiiiiiiijjjjjjjjjjjjjjjjkkkkkkkkkkkkkkkkllllllllllllllllmmmmmmmm"
+        "mmmmmmmmnnnnnnnnnnnnnnnnooooooooooooooo"; // 256 chars including final \0
+
+    configASSERT(sdlib_initialize());
+
+    size_t r;
+    uint16_t cnt = 1;
     for (;;)
     {   
-        // r = sdlib_write_to_file(filename, (const uint8_t*)entry, strlen(entry));
-        // printf("#%u: written %u bytes\r\n", cnt, r);
-        // vTaskDelay(pdMS_TO_TICKS(100));
-        // r = sdlib_read_from_file(filename, buf, sizeof(buf));
-        // printf("#%u: read %u bytes\r\n", cnt, r);
-        // cnt++;
-        vTaskDelay(pdMS_TO_TICKS(100));
+        r = sdlib_write_to_file(log1, (const uint8_t*)entry1, strlen(entry1));
+        printf("#%u: %s written %u bytes\r\n", cnt, log1, r);
+        r = sdlib_write_to_file(log2, (const uint8_t*)entry2, strlen(entry2));
+        printf("#%u: %s written %u bytes\r\n", cnt, log2, r);
+        //vTaskDelay(pdMS_TO_TICKS(100));
+        r = sdlib_read_from_file(log1, sd_test_buf, sizeof(sd_test_buf));
+        printf("#%u: %s read %u bytes\r\n", cnt, log1, r);
+        r = sdlib_read_from_file(log2, sd_test_buf, sizeof(sd_test_buf));
+        printf("#%u: %s read %u bytes\r\n", cnt, log2, r);
+        cnt++;
+        //vTaskDelay(pdMS_TO_TICKS(100));
     }
 }

@@ -252,8 +252,8 @@ ifeq ($(PROG),main_sd)
 			   SD/src/utility/Sd2Card.cpp \
 			   SD/src/utility/SdFile.cpp \
 			   SD/src/utility/SdVolume.cpp \
-			   SD/src/SDLib.cpp
-#			   SD/src/SdDemo_ReadWrite.cpp
+			   SD/src/SDLib.cpp \
+			   SD/src/SdDemo_ReadWrite.cpp
 #			   SD/src/SdDemo_DumpFile.cpp
 #			   SD/src/SdDemo_CardInfo.cpp
 	INCLUDES += -I./SD/src
