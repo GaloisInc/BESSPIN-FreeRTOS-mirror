@@ -61,36 +61,36 @@ void main_sd(void)
 
 
 
-//void sd_demo(void);
-#include "SDLib.h"
+void sd_demo(void);
+//#include "SDLib.h"
 /**
  * This tasks controls GPIO and the connected motors
  */
 static void prvSdTestTask0(void *pvParameters)
 {
     (void)pvParameters;
-    const char *filename = "01.log";
+    // const char *filename = "01.log";
 
-    const char * entry =
-        "hello "
-        "test01xxxxaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbccccccccccccccccdddddddddddd"
-        "ddddeeeeeeeeeeeeeeeeffffffffffffffffgggggggggggggggghhhhhhhhhhhhhhhhii"
-        "iiiiiiiiiiiiiijjjjjjjjjjjjjjjjkkkkkkkkkkkkkkkkllllllllllllllllmmmmmmmm"
-        "mmmmmmmmnnnnnnnnnnnnnnnnooooooooooooooo"; // 256 chars including final \0
+    // const char * entry =
+    //     "hello "
+    //     "test01xxxxaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbccccccccccccccccdddddddddddd"
+    //     "ddddeeeeeeeeeeeeeeeeffffffffffffffffgggggggggggggggghhhhhhhhhhhhhhhhii"
+    //     "iiiiiiiiiiiiiijjjjjjjjjjjjjjjjkkkkkkkkkkkkkkkkllllllllllllllllmmmmmmmm"
+    //     "mmmmmmmmnnnnnnnnnnnnnnnnooooooooooooooo"; // 256 chars including final \0
 
-    uint8_t buf[512] = {0};
-    //sd_demo();
+    // uint8_t buf[512] = {0};
+    sd_demo();
     // Enter endless loop to be consistent with other tests
-    size_t r;
-    uint16_t cnt = 1;
+    // size_t r;
+    // uint16_t cnt = 1;
     for (;;)
     {   
-        r = sdlib_write_to_file(filename, (const uint8_t*)entry, strlen(entry));
-        printf("#%u: written %u bytes\r\n", cnt, r);
-        vTaskDelay(pdMS_TO_TICKS(100));
-        r = sdlib_read_from_file(filename, buf, sizeof(buf));
-        printf("#%u: read %u bytes\r\n", cnt, r);
-        cnt++;
+        // r = sdlib_write_to_file(filename, (const uint8_t*)entry, strlen(entry));
+        // printf("#%u: written %u bytes\r\n", cnt, r);
+        // vTaskDelay(pdMS_TO_TICKS(100));
+        // r = sdlib_read_from_file(filename, buf, sizeof(buf));
+        // printf("#%u: read %u bytes\r\n", cnt, r);
+        // cnt++;
         vTaskDelay(pdMS_TO_TICKS(100));
     }
 }

@@ -20,8 +20,30 @@
 #include "SdFat.h"
 #include <cstdio>
 //------------------------------------------------------------------------------
+#if USE_RTC_CLOCK
+extern "C" {
+  #include "ds1338rtc.h"
+}
+void dateTime(uint16_t *date, uint16_t *time) {
+  uint16_t year;
+  uint8_t month, day, hour, minute, second;
+
+  // User gets date and time from GPS or real-time clock here
+  struct rtctime_t rtc_time;
+  ds1338_read_time(&rtc_time);
+
+  // return date using FAT_DATE macro to format fields
+  *date = FAT_DATE(rtc_time.year+2000, rtc_time.month, rtc_time.day);
+
+  // return time using FAT_TIME macro to format fields
+  *time = FAT_TIME(rtc_time.hour, rtc_time.minute, rtc_time.second);
+}
+// callback function for date/time
+void (*SdFile::dateTime_)(uint16_t* date, uint16_t* time) = dateTime;
+#else // USE_RTC_CLOCK
 // callback function for date/time
 void (*SdFile::dateTime_)(uint16_t* date, uint16_t* time) = NULL;
+#endif // USE_RTC_CLOCK
 
 #if ALLOW_DEPRECATED_FUNCTIONS
 // suppress cpplint warnings with NOLINT comment

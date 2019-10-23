@@ -253,17 +253,35 @@ ifeq ($(PROG),main_sd)
 			   SD/src/utility/SdFile.cpp \
 			   SD/src/utility/SdVolume.cpp \
 			   SD/src/SDLib.cpp
-#			   demo/cpptest.cpp \
 #			   SD/src/SdDemo_ReadWrite.cpp
 #			   SD/src/SdDemo_DumpFile.cpp
 #			   SD/src/SdDemo_CardInfo.cpp
 	INCLUDES += -I./SD/src
+ifeq ($(USE_RTC_CLOCK),1)
+# Below includes for RTC clock (SD FAT time)
+	CFLAGS += -DUSE_RTC_CLOCK=1
+	INCLUDES += -I./devices
+	DEMO_SRC += devices/ds1338rtc.c
+endif # USE_RTC_CLOCK
 else
 ifeq ($(PROG),main_uart)
 	CFLAGS += -DmainDEMO_TYPE=7
 	INCLUDES += -I./devices
 else
 ifeq ($(PROG),main_rtc)
+RTC_YEAR = $(shell date +%y)
+RTC_MONTH = $(shell date +%m)
+RTC_DAY = $(shell date +%d)
+RTC_HOUR = $(shell date +%H)
+RTC_MINUTE = $(shell date +%M)
+RTC_SECONDS = $(shell date +%S)
+	CFLAGS += -DRTC_YEAR=$(RTC_YEAR)
+	CFLAGS += -DRTC_MONTH=$(RTC_MONTH)
+	CFLAGS += -DRTC_DAY=$(RTC_DAY)
+	CFLAGS += -DRTC_HOUR=$(RTC_HOUR)
+	CFLAGS += -DRTC_MINUTE=$(RTC_MINUTE)
+	CFLAGS += -DRTC_SECONDS=$(RTC_SECONDS)
+	CFLAGS += -DRTC_SET_TIME=1
 	CFLAGS += -DmainDEMO_TYPE=10
 	INCLUDES += -I./devices
 	DEMO_SRC += devices/ds1338rtc.c

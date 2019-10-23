@@ -25,7 +25,7 @@
 
 namespace SDLib {
 
-class File {//: public Stream {
+class File {
  private:
   char _name[13]; // our name
   SdFile *_file;  // underlying file pointer
@@ -50,8 +50,6 @@ public:
   boolean isDirectory(void);
   File openNextFile(uint8_t mode = O_RDONLY);
   void rewindDirectory(void);
-  
-  //using Print::write;
 };
 
 class SDClass {

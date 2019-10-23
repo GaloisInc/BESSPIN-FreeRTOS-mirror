@@ -23,9 +23,6 @@
  * \file
  * SdFile and SdVolume classes
  */
-#if defined (__AVR__) || defined (__CPU_ARC__) 
-#include <avr/pgmspace.h>
-#endif
 #include "Sd2Card.h"
 #include <string.h>
 #include "FatStructs.h"
@@ -289,10 +286,6 @@ class SdFile {//: public Print {
   size_t write(uint8_t b);
   size_t write(const void* buf, uint16_t nbyte);
   size_t write(const char* str);
-#ifdef __AVR__
-  void write_P(PGM_P str);
-  void writeln_P(PGM_P str);
-#endif
 //------------------------------------------------------------------------------
 #if ALLOW_DEPRECATED_FUNCTIONS
 // Deprecated functions  - suppress cpplint warnings with NOLINT comment
