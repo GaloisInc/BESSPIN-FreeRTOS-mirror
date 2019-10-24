@@ -55,7 +55,10 @@
 /* #define WOLFSSL_MICROCHIP_PIC32MZ */
 
 /* Uncomment next line if using FreeRTOS */
-/* #define FREERTOS */
+#ifdef testgenOnFreeRTOS
+    #define FREERTOS
+    #define NO_FILESYSTEM
+#endif
 
 /* Uncomment next line if using FreeRTOS Windows Simulator */
 /* #define FREERTOS_WINSIM */
