@@ -25,7 +25,7 @@ void sd_demo(void) {
         "mmmmmmmmnnnnnnnnnnnnnnnnooooooooooooooo"; // 256 chars including final \0
 
     configASSERT(sdlib_initialize());
-    vTaskDelay(pdMS_TO_TICKS(10000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
 
     size_t r;
     uint16_t cnt = 1;
