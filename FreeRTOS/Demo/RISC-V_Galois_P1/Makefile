@@ -78,7 +78,6 @@ ASFLAGS  += -g $(ARCH) $(ABI)  -Wa,-Ilegacy \
 	-DportasmHANDLE_INTERRUPT=external_interrupt_handler
 
 CFLAGS = $(WARNINGS) $(C_WARNINGS) $(INCLUDES)
-CPPFLAGS = $(WARNINGS) $(CPP_WARNINGS) $(INCLUDES)
 
 DEMO_SRC = main.c \
 	demo/$(PROG).c
@@ -328,7 +327,8 @@ endif # main_blinky
 ARFLAGS=crsv
 
 CFLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)
-CPPLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)
+# Disable warnings for C++ for now
+CPPFLAGS += -O0 -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)
 
 #
 # Define all object files.
@@ -357,7 +357,7 @@ $(info ARFLAGS=$(ARFLAGS))
 
 %.o: %.cpp
 	@echo "    C++ $<"
-	@$(CPP) -c $(CPPLAGS) -o $@ $<
+	@$(CPP) -c $(CPPFLAGS) -o $@ $<
 
 %.o: %.S
 	@echo "    CC $<"
