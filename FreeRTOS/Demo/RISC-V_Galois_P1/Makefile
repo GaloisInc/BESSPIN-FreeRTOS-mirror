@@ -10,7 +10,9 @@ TARGET=$(CCPATH)riscv64-unknown-elf
 # Decide which compiler to use
 ifeq ($(USE_CLANG),yes)
 	CC		= clang --target=riscv32
-	CPP		= clang --target=riscv32
+	# CPP		= clang++ --target=riscv32
+	# TODO: clang has problems with system includes, use g++ for now
+	CPP		= $(TARGET)-g++
 	# LLVM doesn't support linking RISC-V files yet,
 	# so we have to use GCC linker to do so
 	LD		= $(TARGET)-gcc
