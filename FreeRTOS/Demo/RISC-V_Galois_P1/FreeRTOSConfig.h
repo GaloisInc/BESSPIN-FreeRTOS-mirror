@@ -111,7 +111,7 @@
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 1
 
 // See http://www.nadler.com/embedded/newlibAndFreeRTOS.html
-#define configUSE_NEWLIB_REENTRANT 1 // Required for thread-safety of newlib sprintf, 
+#define configUSE_NEWLIB_REENTRANT 0 // Required for thread-safety of newlib sprintf, 
 
 /* Runtime stats definitions */
 // TODO: use only for debugging
