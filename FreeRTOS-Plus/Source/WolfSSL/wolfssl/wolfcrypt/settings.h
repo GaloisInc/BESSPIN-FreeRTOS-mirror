@@ -55,9 +55,9 @@
 /* #define WOLFSSL_MICROCHIP_PIC32MZ */
 
 /* Uncomment next line if using FreeRTOS */
+/* #define FREERTOS */ 
 #ifdef testgenOnFreeRTOS
-    #define FREERTOS
-    #define NO_FILESYSTEM
+    #include "testgenWolfSSLsettings.h"
 #endif
 
 /* Uncomment next line if using FreeRTOS Windows Simulator */
