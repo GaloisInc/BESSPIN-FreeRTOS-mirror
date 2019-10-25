@@ -31,7 +31,7 @@ const char *filename = "test.txt";
 void sd_demo() {
   printf("Initializing SD card...\r\n");
 
-  if (!SD.begin(4)) {
+  if (!SD.begin()) {
     printf("initialization failed!\r\n");
     while (1);
   }

@@ -2,8 +2,12 @@
 #include "SD.h"
 #include <cstdio>
 
-File testfile;
+File sdfile;
 
+/**
+ * Initialize SD card
+ * Has to be called once before any other SDLib function
+ */
 int sdlib_initialize(void) {
   printf("Initializing SD card...\r\n");
   if (!SD.begin()) {
@@ -14,40 +18,177 @@ int sdlib_initialize(void) {
   return 1;
 }
 
+/**
+ * Return true if given filepath exists
+ */
+bool sdlib_exists(const char *filepath) {
+  return SD.exists(filepath);
+}
+
+/**
+ * Sync the date with the SD filesystem
+ */
+void sdlib_sync(const char *filename) {
+  if (sdfile) {
+    sdfile.flush();
+  }
+}
+
+/**
+ * Return size of the file given by `filename`
+ * or 0 if no such file exists
+ */
+size_t sdlib_size(const char *filename) {
+  // check if sdfile is open
+  size_t size = 0;
+  sdfile.close();
+  sdfile = SD.open(filename);
+  if (sdfile) {
+    // successfuly opened
+    size = sdfile.size();
+  }
+
+  sdfile.close();
+  return size;
+}
+
+/**
+ * Seek by `new_offset`
+ */
+bool sdlib_seek(const char *filename, uint32_t new_offset) {
+  // check if sdfile is open
+  if (sdfile) {
+    // check if it is the same file
+    if (strcmp(sdfile.name(),filename) == 0) {
+      // file is already open, return the position
+      return sdfile.seek(new_offset);
+    } else {
+      // it is a different file, close it first
+      sdfile.close();
+    }
+  }
+
+  // we closed the old file
+  // attempt to open the new file with FILE_WRITE, because we might want to write to it
+  sdfile = SD.open(filename, FILE_WRITE);
+  if (sdfile) {
+    // successfuly opened
+    return sdfile.seek(new_offset);
+  }
+  
+  // nothing worked, return 0
+  return false;
+}
+
+/**
+ * `tell` is called `position`
+ */
+uint32_t sdlib_tell(const char *filename) {
+  // check if sdfile is open
+  if (sdfile) {
+    // check if it is the same file
+    if (strcmp(sdfile.name(),filename) == 0) {
+      // file is already open, return the position
+      return sdfile.position();
+    } else {
+      // it is a different file, close it first
+      sdfile.close();
+    }
+  }
+
+  // we closed the old file
+  // attempt to open the new file with FILE_WRITE, because we might want to write to it
+  sdfile = SD.open(filename, FILE_WRITE);
+  if (sdfile) {
+    // successfuly opened
+    return sdfile.position();
+  }
+  
+  // nothing worked, return 0
+  return 0;
+}
+
+/**
+ * Close the file, doesn't matter what filename it is, as long as it is open
+ */
+void sdlib_close(const char *filename) {
+  (void)filename;
+  sdfile.close();
+}
+
+/**
+ * Open or create file specified by `filename` (O_READ | O_WRITE | O_CREAT | O_APPEND)
+ * and write `buf` into it.
+ * Return number of bytes written, or 0 if an error occured
+ */
 size_t sdlib_write_to_file(const char *filename, const uint8_t *buf,
                            size_t size) {
   size_t r = 0;
-  // open the testfile. note that only one testfile can be open at a time,
-  // so you have to close this one before opening another.
-  testfile = SD.open(filename, FILE_WRITE);
-
-  // if the testfile opened okay, write to it:
-  if (testfile) {
-    r = testfile.write((uint8_t *)buf, size);
-    // close the testfile:
-    testfile.close();
-  } else {
-    // if the testfile didn't open, print an error:
-    printf("error opening test.txt\r\n");
+  // is the file already open?
+  if (sdfile) {
+    // check filename
+    if (strcmp(sdfile.name(),filename) == 0) {
+      printf("sdlib_write_to_file:Filename matches\r\n");
+      r = sdfile.write((uint8_t *)buf, size);
+      // return what we have
+      return r;
+    } else {
+      // close it, because it is not our file
+      printf("sdlib_write_to_file: closing file\r\n");
+      sdfile.close();
+    }
+  }
+  // open the sdfile. note that only one sdfile can be open at a time
+  printf("sdlib_write_to_file: opening file\r\n");
+  sdfile = SD.open(filename, FILE_WRITE);
+  // if the sdfile opened okay, write to it:
+  if (sdfile) {
+    printf("sdlib_write_to_file: writing to opened file\r\n");
+    r = sdfile.write((uint8_t *)buf, size);
   }
   return r;
 }
 
+/**
+ * Read from a file specified by `filename` 
+ * Return 0 if no bytes were read.
+ */
 size_t sdlib_read_from_file(const char *filename, uint8_t *buf, size_t size) {
   size_t r = 0;
-  testfile = SD.open(filename);
-  if (testfile) {
+  printf("reading from file, filename %s\r\n", filename);
+  if (sdfile) {
+    // check filename
+    printf("sdlib_read_from_file previously open sdfile.name() = %s\r\n", sdfile.name());
+    if (strcmp(sdfile.name(),filename) == 0) {
+      printf("sdlib_read_from_file:Filename matches\r\n");
+      // read from the file until there's nothing else in it or we fill the buffer
+      while (sdfile.available() && r < size) {
+        uint8_t c = sdfile.read();
+        buf[(uint16_t)r] = c;
+        r++;
+      }
+      // return what we have
+      return r; 
+    } else {
+      // close it, because it is not our file
+      printf("sdlib_read_from_file: closing file\r\n");
+      sdfile.close();
+    }
+  }
+  // open the sdfile. note that only one sdfile can be open at a time,
+  printf("sdlib_read_from_file: opening file\r\n");
+  sdfile = SD.open(filename, FILE_WRITE);
+  if (sdfile) {
+    sdfile.seek(0); // reset to the beginning (FILE_WRITE moves it to the end)
+    printf("sdlib_read_from_file just opened sdfile.name() = %s\r\n", sdfile.name());
     // read from the file until there's nothing else in it:
-    while (testfile.available() && r < size) {
-      uint8_t c = testfile.read();
+    printf("sdlib_read_from_file: reading from opened file\r\n");
+    while (sdfile.available() && r < size) {
+      uint8_t c = sdfile.read();
       buf[(uint16_t)r] = c;
       r++;
     }
-    // close the testfile:
-    testfile.close();
-  } else {
-    // if the testfile didn't open, print an error:
-    printf("error opening test.txt\r\n");
   }
+  printf("sdlib_read_from_file: returning %u\r\n", r);
   return r;
 }
