@@ -308,7 +308,7 @@ int mp_grow (mp_int * a, int size)
      */
     #ifdef testgenOnFreeRTOS
       //pass the original size too
-      tmp = OPT_CAST(mp_digit) XREALLOC (a->dp, sizeof (mp_digit) * size, USE_TESTGEN_REALLOC,
+      tmp = OPT_CAST(mp_digit) XREALLOC (a->dp, sizeof (mp_digit) * size, (int*) USE_TESTGEN_REALLOC,
                                          sizeof (mp_digit) * a->alloc);
     #else
       tmp = OPT_CAST(mp_digit) XREALLOC (a->dp, sizeof (mp_digit) * size, 0,
