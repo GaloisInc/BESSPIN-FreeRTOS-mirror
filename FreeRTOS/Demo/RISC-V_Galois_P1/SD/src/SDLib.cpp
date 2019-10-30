@@ -128,22 +128,18 @@ size_t sdlib_write_to_file(const char *filename, const uint8_t *buf,
   if (sdfile) {
     // check filename
     if (strcmp(sdfile.name(),filename) == 0) {
-      printf("sdlib_write_to_file:Filename matches\r\n");
       r = sdfile.write((uint8_t *)buf, size);
       // return what we have
       return r;
     } else {
       // close it, because it is not our file
-      printf("sdlib_write_to_file: closing file\r\n");
       sdfile.close();
     }
   }
   // open the sdfile. note that only one sdfile can be open at a time
-  printf("sdlib_write_to_file: opening file\r\n");
   sdfile = SD.open(filename, FILE_WRITE);
   // if the sdfile opened okay, write to it:
   if (sdfile) {
-    printf("sdlib_write_to_file: writing to opened file\r\n");
     r = sdfile.write((uint8_t *)buf, size);
   }
   return r;
@@ -155,12 +151,9 @@ size_t sdlib_write_to_file(const char *filename, const uint8_t *buf,
  */
 size_t sdlib_read_from_file(const char *filename, uint8_t *buf, size_t size) {
   size_t r = 0;
-  printf("reading from file, filename %s\r\n", filename);
   if (sdfile) {
     // check filename
-    printf("sdlib_read_from_file previously open sdfile.name() = %s\r\n", sdfile.name());
     if (strcmp(sdfile.name(),filename) == 0) {
-      printf("sdlib_read_from_file:Filename matches\r\n");
       // read from the file until there's nothing else in it or we fill the buffer
       while (sdfile.available() && r < size) {
         uint8_t c = sdfile.read();
@@ -171,24 +164,19 @@ size_t sdlib_read_from_file(const char *filename, uint8_t *buf, size_t size) {
       return r; 
     } else {
       // close it, because it is not our file
-      printf("sdlib_read_from_file: closing file\r\n");
       sdfile.close();
     }
   }
   // open the sdfile. note that only one sdfile can be open at a time,
-  printf("sdlib_read_from_file: opening file\r\n");
   sdfile = SD.open(filename, FILE_WRITE);
   if (sdfile) {
     sdfile.seek(0); // reset to the beginning (FILE_WRITE moves it to the end)
-    printf("sdlib_read_from_file just opened sdfile.name() = %s\r\n", sdfile.name());
     // read from the file until there's nothing else in it:
-    printf("sdlib_read_from_file: reading from opened file\r\n");
     while (sdfile.available() && r < size) {
       uint8_t c = sdfile.read();
       buf[(uint16_t)r] = c;
       r++;
     }
   }
-  printf("sdlib_read_from_file: returning %u\r\n", r);
   return r;
 }
