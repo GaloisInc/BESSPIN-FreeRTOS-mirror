@@ -366,9 +366,9 @@ endif # main_blinky
 ARFLAGS=crsv
 
 ifeq ($(PROG),main_netboot)
-	OPT = -O2
+	OPT ?= -O2
 else
-	OPT = -O0
+	OPT ?= -O0
 endif
 
 CFLAGS += $(OPT) -g3 $(ARCH) $(ABI) $(COMPILER_FLAGS) $(INCLUDES)
