@@ -340,7 +340,7 @@ ifeq ($(PROG),main_fett)
 	include $(INC_FETT_APPS)/envFett.mk
 else
 ifeq ($(PROG),main_netboot)
-	CFLAGS += -DmainDEMO_TYPE=0xB002
+	CFLAGS += -DmainDEMO_TYPE=13 -DNETBOOT
 	PORT_ASM += demo/netboot.S
 	INCLUDES += $(FREERTOS_IP_INCLUDE)
 	FREERTOS_SRC += $(FREERTOS_IP_SRC)

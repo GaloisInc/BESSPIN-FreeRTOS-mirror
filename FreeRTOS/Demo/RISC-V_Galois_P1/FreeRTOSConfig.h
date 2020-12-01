@@ -102,7 +102,7 @@
 
 #define configTICK_RATE_HZ ((TickType_t)1000)
 #define configMAX_PRIORITIES (5)
-#define configMINIMAL_STACK_SIZE ((uint32_t)512) /* Can be as low as 60 but some of the demo tasks that use this constant require it to be higher. */
+#define configMINIMAL_STACK_SIZE ((uint32_t)1024) /* Can be as low as 60 but some of the demo tasks that use this constant require it to be higher. */
 #define configSTACK_DEPTH_TYPE uint32_t //the default ifndef is uint16_t
 #define configTOTAL_HEAP_SIZE ((size_t)(8 * 1024 * 1024)) //Has to match the value in link.ld for _HEAP_SIZE
 #define configMAX_TASK_NAME_LEN (16)
