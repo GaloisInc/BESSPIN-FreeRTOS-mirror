@@ -73,8 +73,8 @@
 OUTPUT_ARCH( "riscv" )
 
 /* hardcoded values so LLD understands the definitions */
-_STACK_SIZE = 4K;
-_HEAP_SIZE = 256K;
+_STACK_SIZE = 128K;
+_HEAP_SIZE = 8M;
 _DMEM_LENGTH = 0x00800000;
 
 /*****************************************************************************

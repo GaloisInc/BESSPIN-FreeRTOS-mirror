@@ -32,6 +32,15 @@ ifeq ($(USE_CLANG),yes)
 	LINKER_FLAGS = -mno-relax --sysroot=$(SYSROOT_DIR) -fuse-ld=lld
 	LIBS	 =  -lc -lclang_rt.builtins-riscv$(XLEN)
 	WERROR =
+	ifeq ($(USE_MORPHEUS), yes)
+		LIBS	 =  -lc -L$(EMTD_PREFIX)/lib/clang/11.0.0/lib -lclang_rt.builtins-riscv$(XLEN)
+		COMPILER_FLAGS += \
+							-DENABLE_MORPHEUS -fno-inline-functions -Xclang -load -Xclang \
+							$(EMTD_PREFIX)/lib/MorpheusPointerEncryption.so -fno-builtin \
+							-mllvm -encrypt -mllvm -encrypt_data=false
+	else
+		LIBS	 = -lc -lclang_rt.builtins-riscv$(XLEN)
+	endif
 else
 	CC		= $(TARGET)-gcc
 	CPP		= $(TARGET)-g++
@@ -88,7 +97,8 @@ INCLUDES = \
 	-I./bsp \
 	-I$(FREERTOS_SOURCE_DIR)/include \
 	-I../Common/include \
-	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V
+	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V \
+	-I./demo
 
 ASFLAGS  += -g $(ARCH) $(ABI)  -Wa,-Ilegacy \
 	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V/chip_specific_extensions/RV32I_CLINT_no_extensions \
@@ -98,6 +108,10 @@ CFLAGS = $(WARNINGS) $(C_WARNINGS) $(INCLUDES)
 
 DEMO_SRC = main.c \
 	demo/$(PROG).c
+
+ifneq ($(BSP),vcu118)
+	$(error Unsupported Board Support Package (BSP) selected: $(BSP))
+endif
 
 APP_SRC = \
 	bsp/bsp.c \
@@ -324,8 +338,9 @@ else
 ifeq ($(PROG),main_uart_malware)
 	CFLAGS += -DmainDEMO_TYPE=11
 else
-ifeq ($(PROG),main_testgen)
-	include $(INC_TESTGEN)/testgenEnvironment.mk
+ifeq ($(PROG),main_fett)
+	CFLAGS += -DmainDEMO_TYPE=12
+	include $(INC_FETT_APPS)/envFett.mk
 else
 ifeq ($(PROG),main_netboot)
 	CFLAGS += -DmainDEMO_TYPE=0xB002
@@ -335,7 +350,7 @@ ifeq ($(PROG),main_netboot)
 else
 $(error unknown demo: $(PROG))
 endif # main_netboot
-endif # main_testgen
+endif # main_fett
 endif # main_uart_malware
 endif # main_rtc
 endif # main_uart
@@ -414,6 +429,7 @@ clean :
 	@rm -f $(PROG).elf 
 	@rm -f $(PROG).map
 	@rm -f $(PROG).asm
+	@find ../../../ -iname '*.o' -exec rm -rf {} \;
 
 docs :
 	@doxygen

@@ -104,11 +104,7 @@
 #define configMAX_PRIORITIES (5)
 #define configMINIMAL_STACK_SIZE ((uint32_t)512) /* Can be as low as 60 but some of the demo tasks that use this constant require it to be higher. */
 #define configSTACK_DEPTH_TYPE uint32_t //the default ifndef is uint16_t
-#ifdef configCUSTOM_HEAP_SIZE
-    #define configTOTAL_HEAP_SIZE ((size_t)(configCUSTOM_HEAP_SIZE * 1024 * 1024))
-#else
-    #define configTOTAL_HEAP_SIZE ((size_t)(256 * 1024))
-#endif
+#define configTOTAL_HEAP_SIZE ((size_t)(8 * 1024 * 1024)) //Has to match the value in link.ld for _HEAP_SIZE
 #define configMAX_TASK_NAME_LEN (16)
 #define configUSE_TRACE_FACILITY 1
 #define configUSE_16_BIT_TICKS 0
@@ -184,8 +180,8 @@ header file. */
             ;                     \
     }
 
-#endif /* FREERTOS_CONFIG_H */
-
-#ifdef testgenOnFreeRTOS
-    #include "testgenTraceHooks.h"
+#ifdef FETT_APPS
+    #include "fettFreeRTOSConfig.h"
 #endif
+
+#endif /* FREERTOS_CONFIG_H */
