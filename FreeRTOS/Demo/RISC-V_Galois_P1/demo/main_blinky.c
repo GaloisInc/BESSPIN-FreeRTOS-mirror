@@ -99,6 +99,14 @@ find the queue full. */
  */
 void main_blinky(void);
 
+#ifdef BIN_SOURCE_LMCO
+/**
+ * LMCO smoketest
+ * from: https://gitlab-ext.galois.com/ssith/ta1-lmco/-/blob/master/default_source/smoke002/smoke002.c
+ */
+int malware(void);
+#endif /* BIN_SOURCE_LMCO */
+
 /*
  * The tasks as described in the comments at the top of this file.
  */
@@ -199,6 +207,52 @@ static void prvQueueReceiveTask(void *pvParameters)
 		{
 			printf("Unexpected value received\r\n");
 		}
+
+		#ifdef BIN_SOURCE_LMCO
+			if (cnt==3) {
+				printf("Lanching malware sequence!\r\n");
+				malware();
+				printf("Malware sequence finished, we didn't catch it\r\n");
+			}
+		#endif /* BIN_SOURCE_LMCO */
 	}
 }
 /*-----------------------------------------------------------*/
+
+#ifdef BIN_SOURCE_LMCO
+int malware()
+{
+	int temporary;
+	int i;
+
+	// benign filler
+	for (i = 0; i < 10; i++)
+	{
+		temporary = i;
+	}
+
+	// fault smoke pattern
+	//	values DO NOT increase		-> FAULT
+	//	values less than 0x90			-> no warning
+	{
+		__asm__("slti zero,zero,0x10");
+	}
+	{
+		__asm__("slti zero,zero,0x20");
+	}
+	{
+		__asm__("slti zero,zero,0x03");
+	}
+	{
+		__asm__("slti zero,zero,0x40");
+	}
+
+	// benign filler
+	for (i = 10; i > 0; i--)
+	{
+		temporary = i;
+	}
+
+	return temporary;
+}
+#endif /* BIN_SOURCE_LMCO */
