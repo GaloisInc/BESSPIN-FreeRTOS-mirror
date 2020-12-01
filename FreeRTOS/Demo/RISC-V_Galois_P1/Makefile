@@ -3,6 +3,7 @@ $(info $$PROG is [${PROG}])
 
 configCPU_CLOCK_HZ ?=
 configMTIME_HZ ?=
+BSP 	?= vcu118
 
 CCPATH 		?=
 TARGET=$(CCPATH)riscv64-unknown-elf
@@ -162,7 +163,7 @@ APP_SRC = \
 	bsp/xilinx/common/xil_io.c \
 	bsp/xilinx/common/xil_assert.c
 
-INCLUDES = \
+INCLUDES += \
 	-I. \
 	-I./bsp \
 	-I./bsp/xilinx \
@@ -173,10 +174,6 @@ INCLUDES = \
 	-I./bsp/xilinx/iic \
 	-I./bsp/xilinx/spi \
 	-I./bsp/xilinx/gpio \
-	-I$(FREERTOS_SOURCE_DIR)/include \
-	-I../Common/include \
-	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V \
-	-I./demo
 
 ASFLAGS  += -g $(ARCH) $(ABI)  -Wa,-Ilegacy \
 	-I$(FREERTOS_SOURCE_DIR)/portable/GCC/RISC-V/chip_specific_extensions/RV32I_CLINT_no_extensions \
