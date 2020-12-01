@@ -151,6 +151,8 @@ static int prvTftpReceive(const char *host, uint16_t port, const char *name, cha
 void main_netboot(void)
 {
 
+	FreeRTOS_IPInit(ucIPAddress, ucNetMask, ucGatewayAddress, ucDNSServerAddress, ucMACAddress);
+
 	printf("\r\n\r\n");
 	printf("GFEBoot RV" XSTR(__riscv_xlen) "\r\n");
 	printf("\r\n");
@@ -161,8 +163,7 @@ void main_netboot(void)
 	printf(" | |__| | |    | |____| |_) | (_) | (_) | |_ \r\n");
 	printf("  \\_____|_|    |______|____/ \\___/ \\___/ \\__|\r\n");
 	printf("\r\n\r\n");
-
-	FreeRTOS_IPInit(ucIPAddress, ucNetMask, ucGatewayAddress, ucDNSServerAddress, ucMACAddress);
+	
 }
 
 void vApplicationIPNetworkEventHook(eIPCallbackEvent_t eNetworkEvent)
