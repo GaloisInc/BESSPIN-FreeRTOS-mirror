@@ -22,6 +22,10 @@
 #include "stdint.h"
 #include "plic_driver.h"
 
+#ifdef FETT_APPS
+#include "fettUserConfig.h"
+#endif
+
 /**
  * PLIC defines
  */

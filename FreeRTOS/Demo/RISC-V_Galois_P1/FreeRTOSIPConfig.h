@@ -365,6 +365,19 @@ to 1 but a DNS server cannot be contacted.*/
 #define ipconfigTCP_IP_SANITY 1
 
 #ifdef FETT_APPS
+    /* APPLICATION SPECIFIC CONFIGURATION
+       ----------------------------------
+       We currently offer two options here
+       1. The FETT application
+       2. Anything else
+
+       For the FETT application, we load addition macro definitions from fettFreeRTOSIPConfig.h
+
+       For anything else, we set sensible default values for the following defines
+        configUSE_DNS
+        ipconfigUSE_DHCP
+        ipconfigMAXIMUM_DISCOVER_TX_PERIOD
+    */
     #include "fettFreeRTOSIPConfig.h"
 #else
 
