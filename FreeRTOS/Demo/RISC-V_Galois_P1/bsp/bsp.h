@@ -67,6 +67,9 @@ extern plic_instance_t Plic;
 void prvSetupHardware(void);
 void external_interrupt_handler(HANDLER_DATATYPE cause);
 
+#ifdef BIN_SOURCE_LMCO
+    void exception_handler(HANDLER_DATATYPE mcause, HANDLER_DATATYPE mepc, HANDLER_DATATYPE mstatus);
+#endif /* BIN_SOURCE_LMCO */
 
 /**
  * UART defines

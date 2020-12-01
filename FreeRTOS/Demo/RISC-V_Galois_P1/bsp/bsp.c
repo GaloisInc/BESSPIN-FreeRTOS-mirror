@@ -75,3 +75,31 @@ void external_interrupt_handler(HANDLER_DATATYPE cause)
     // clear interrupt
     PLIC_complete_interrupt(&Plic, source_id);
 }
+
+#ifdef BIN_SOURCE_LMCO
+    /**
+     * Prints mcause, mepc, and mstatus register values
+     * and requests other tasks to shut down
+     */
+    #include <stdio.h>
+
+    #ifndef NETBOOT
+        /* From fettMisc.c */
+        extern void exitFett (uint8_t exitCode);
+    #endif
+
+    void exception_handler(HANDLER_DATATYPE mcause, HANDLER_DATATYPE mepc, HANDLER_DATATYPE mstatus)
+    {
+        printf("LMCO SSITH CPU Pipeline exception\n");
+        printf("mcause: 0x%X\n", mcause);
+        printf("mepc: 0x%X\n", mepc);
+        printf("mstatus: 0x%X\n", mstatus);
+
+        #ifndef NETBOOT
+            /* Signal other tasks to terminate cleanly */
+            exitFett(1);
+        #endif
+
+        for (;;) ;;
+    }
+#endif /* BIN_SOURCE_LMCO */
