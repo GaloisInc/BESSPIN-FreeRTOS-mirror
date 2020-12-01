@@ -71,9 +71,9 @@ extern void main_rtc(void);
 #undef configGENERATE_RUN_TIME_STATS
 #pragma message "Demo type 12: FETT"
 extern void main_fett(void);
-#elif mainDEMO_TYPE == 0xB002
+#elif mainDEMO_TYPE == 13
 #undef configGENERATE_RUN_TIME_STATS
-#pragma message "Demo type 0xB002: Netboot"
+#pragma message "Demo type 13: Netboot"
 extern void main_netboot(void);
 
 #else
@@ -192,7 +192,7 @@ int main(void)
 	{
 		main_fett();
 	}
-#elif mainDEMO_TYPE == 0xB002
+#elif mainDEMO_TYPE == 13
 	{
 		main_netboot();
 	}
