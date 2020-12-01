@@ -140,24 +140,6 @@ milliseconds can be converted to a time in ticks by dividing the time in
 milliseconds by portTICK_PERIOD_MS. */
 #define ipconfigUDP_MAX_SEND_BLOCK_TIME_TICKS ( 5000 / portTICK_PERIOD_MS )
 
-/* If ipconfigUSE_DHCP is 1 then FreeRTOS+TCP will attempt to retrieve an IP
-address, netmask, DNS server address and gateway address from a DHCP server.  If
-ipconfigUSE_DHCP is 0 then FreeRTOS+TCP will use a static IP address.  The
-stack will revert to using the static IP address even when ipconfigUSE_DHCP is
-set to 1 if a valid configuration cannot be obtained from a DHCP server for any
-reason.  The static configuration used is that passed into the stack by the
-FreeRTOS_IPInit() function call. */
-#define ipconfigUSE_DHCP	0
-
-/* When ipconfigUSE_DHCP is set to 1, DHCP requests will be sent out at
-increasing time intervals until either a reply is received from a DHCP server
-and accepted, or the interval between transmissions reaches
-ipconfigMAXIMUM_DISCOVER_TX_PERIOD.  The IP stack will revert to using the
-static IP address passed as a parameter to FreeRTOS_IPInit() if the
-re-transmission time interval reaches ipconfigMAXIMUM_DISCOVER_TX_PERIOD without
-a DHCP reply being received. */
-#define ipconfigMAXIMUM_DISCOVER_TX_PERIOD		( 120000 / portTICK_PERIOD_MS )
-
 /* The ARP cache is a table that maps IP addresses to MAC addresses.  The IP
 stack can only send a UDP message to a remove IP address if it knowns the MAC
 address associated with the IP address, or the MAC address of the router used to
@@ -236,10 +218,6 @@ ipconfigCAN_FRAGMENT_OUTGOING_PACKETS is 1 then (ipconfigNETWORK_MTU - 28) must
 be divisible by 8. */
 #define ipconfigNETWORK_MTU		1200
 
-/* Set ipconfigUSE_DNS to 1 to include a basic DNS client/resolver.  DNS is used
-through the FreeRTOS_gethostbyname() API function. */
-#define ipconfigUSE_DNS			1
-
 /* If ipconfigREPLY_TO_INCOMING_PINGS is set to 1 then the IP stack will
 generate replies to incoming ICMP echo (ping) requests. */
 #define ipconfigREPLY_TO_INCOMING_PINGS				1
@@ -307,56 +285,58 @@ disconnecting stage will timeout after a period of non-activity. */
 #define ipconfigZERO_COPY_RX_DRIVER			( 0 )
 #define ipconfigZERO_COPY_TX_DRIVER			( 0 )
 
-/* Demo config */
-/* The address of an echo server that will be used by the two demo echo client
-tasks.
-http://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/TCP_Echo_Clients.html
-http://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/UDP_Echo_Clients.html */
-#define configECHO_SERVER_ADDR0	10
-#define configECHO_SERVER_ADDR1 88
-#define configECHO_SERVER_ADDR2 88
-#define configECHO_SERVER_ADDR3 1
+#ifndef FETT_APPS
+    /* Demo config */
+    /* The address of an echo server that will be used by the two demo echo client
+    tasks.
+    http://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/TCP_Echo_Clients.html
+    http://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/UDP_Echo_Clients.html */
+    #define configECHO_SERVER_ADDR0	10
+    #define configECHO_SERVER_ADDR1 88
+    #define configECHO_SERVER_ADDR2 88
+    #define configECHO_SERVER_ADDR3 1
 
-/* Default MAC address configuration.  The demo creates a virtual network
-connection that uses this MAC address by accessing the raw Ethernet/WiFi data
-to and from a real network connection on the host PC.  See the
-configNETWORK_INTERFACE_TO_USE definition above for information on how to
-configure the real network connection to use. */
-#define configMAC_ADDR0		0x00
-#define configMAC_ADDR1		0x0A
-#define configMAC_ADDR2		0x35
-#define configMAC_ADDR3		0x04
-#define configMAC_ADDR4		0xDB
-#define configMAC_ADDR5		0x77
+    /* Default MAC address configuration.  The demo creates a virtual network
+    connection that uses this MAC address by accessing the raw Ethernet/WiFi data
+    to and from a real network connection on the host PC.  See the
+    configNETWORK_INTERFACE_TO_USE definition above for information on how to
+    configure the real network connection to use. */
+    #define configMAC_ADDR0		0x00
+    #define configMAC_ADDR1		0x0A
+    #define configMAC_ADDR2		0x35
+    #define configMAC_ADDR3		0x04
+    #define configMAC_ADDR4		0xDB
+    #define configMAC_ADDR5		0x77
 
-/* Default IP address configuration.  Used in ipconfigUSE_DNS is set to 0, or
-ipconfigUSE_DNS is set to 1 but a DNS server cannot be contacted. */
-#define configIP_ADDR0		10
-#define configIP_ADDR1		88
-#define configIP_ADDR2		88
-#define configIP_ADDR3		2
+    /* Default IP address configuration.  Used in ipconfigUSE_DNS is set to 0, or
+    ipconfigUSE_DNS is set to 1 but a DNS server cannot be contacted. */
+    #define configIP_ADDR0		10
+    #define configIP_ADDR1		88
+    #define configIP_ADDR2		88
+    #define configIP_ADDR3		2
 
-/* Default gateway IP address configuration.  Used in ipconfigUSE_DNS is set to
-0, or ipconfigUSE_DNS is set to 1 but a DNS server cannot be contacted. */
-#define configGATEWAY_ADDR0	10
-#define configGATEWAY_ADDR1	88
-#define configGATEWAY_ADDR2	88
-#define configGATEWAY_ADDR3	1
+    /* Default gateway IP address configuration.  Used in ipconfigUSE_DNS is set to
+    0, or ipconfigUSE_DNS is set to 1 but a DNS server cannot be contacted. */
+    #define configGATEWAY_ADDR0	10
+    #define configGATEWAY_ADDR1	88
+    #define configGATEWAY_ADDR2	88
+    #define configGATEWAY_ADDR3	1
+
+    /* Default netmask configuration.  Used in ipconfigUSE_DNS is set to 0, or
+    ipconfigUSE_DNS is set to 1 but a DNS server cannot be contacted. */
+    #define configNET_MASK0		255
+    #define configNET_MASK1		255
+    #define configNET_MASK2		255
+    #define configNET_MASK3		0
+#endif //ndef FETT_APPS
 
 /* Default DNS server configuration.  OpenDNS addresses are 208.67.222.222 and
 208.67.220.220.  Used in ipconfigUSE_DNS is set to 0, or ipconfigUSE_DNS is set
 to 1 but a DNS server cannot be contacted.*/
-#define configDNS_SERVER_ADDR0 	4
-#define configDNS_SERVER_ADDR1 	2
-#define configDNS_SERVER_ADDR2 	2
-#define configDNS_SERVER_ADDR3 	2
-
-/* Default netmask configuration.  Used in ipconfigUSE_DNS is set to 0, or
-ipconfigUSE_DNS is set to 1 but a DNS server cannot be contacted. */
-#define configNET_MASK0		255
-#define configNET_MASK1		255
-#define configNET_MASK2		255
-#define configNET_MASK3		0
+#define configDNS_SERVER_ADDR0  4
+#define configDNS_SERVER_ADDR1  2
+#define configDNS_SERVER_ADDR2  2
+#define configDNS_SERVER_ADDR3  2
 
 /* The UDP port to which print messages are sent. */
 #define configPRINT_PORT	( 45000 )
@@ -379,6 +359,33 @@ ipconfigUSE_DNS is set to 1 but a DNS server cannot be contacted. */
 */
 #define ipconfigCHECK_IP_QUEUE_SPACE 1
 #define ipconfigTCP_IP_SANITY 1
+
+#ifdef FETT_APPS
+    #include "fettFreeRTOSIPConfig.h"
+#else
+
+    /* If ipconfigUSE_DHCP is 1 then FreeRTOS+TCP will attempt to retrieve an IP
+    address, netmask, DNS server address and gateway address from a DHCP server.  If
+    ipconfigUSE_DHCP is 0 then FreeRTOS+TCP will use a static IP address.  The
+    stack will revert to using the static IP address even when ipconfigUSE_DHCP is
+    set to 1 if a valid configuration cannot be obtained from a DHCP server for any
+    reason.  The static configuration used is that passed into the stack by the
+    FreeRTOS_IPInit() function call. */
+    #define ipconfigUSE_DHCP    0
+
+    /* When ipconfigUSE_DHCP is set to 1, DHCP requests will be sent out at
+    increasing time intervals until either a reply is received from a DHCP server
+    and accepted, or the interval between transmissions reaches
+    ipconfigMAXIMUM_DISCOVER_TX_PERIOD.  The IP stack will revert to using the
+    static IP address passed as a parameter to FreeRTOS_IPInit() if the
+    re-transmission time interval reaches ipconfigMAXIMUM_DISCOVER_TX_PERIOD without
+    a DHCP reply being received. */
+    #define ipconfigMAXIMUM_DISCOVER_TX_PERIOD      ( 120000 / portTICK_PERIOD_MS )
+
+    /* Set ipconfigUSE_DNS to 1 to include a basic DNS client/resolver.  DNS is used
+    through the FreeRTOS_gethostbyname() API function. */
+    #define ipconfigUSE_DNS         1
+#endif // FETT_APPS
 
 //#define ipconfigETHERNET_MINIMUM_PACKET_BYTES 64
 #endif /* FREERTOS_IP_CONFIG_H */

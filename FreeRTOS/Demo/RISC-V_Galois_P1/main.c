@@ -69,8 +69,8 @@ extern void main_peekpoke(void);
 extern void main_rtc(void);
 #elif mainDEMO_TYPE == 12
 #undef configGENERATE_RUN_TIME_STATS
-#pragma message "Demo type 12: Testgen"
-extern void main_testgen(void);
+#pragma message "Demo type 12: FETT"
+extern void main_fett(void);
 #elif mainDEMO_TYPE == 0xB002
 #undef configGENERATE_RUN_TIME_STATS
 #pragma message "Demo type 0xB002: Netboot"
@@ -190,7 +190,7 @@ int main(void)
 	}
 #elif mainDEMO_TYPE == 12
 	{
-		main_testgen();
+		main_fett();
 	}
 #elif mainDEMO_TYPE == 0xB002
 	{
