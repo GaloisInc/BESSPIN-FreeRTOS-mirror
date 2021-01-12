@@ -53,7 +53,7 @@ else
 	COMPILER_FLAGS =
 	LINKER_FLAGS =
 	LIBS	 =  -lc -lgcc
-	WERROR = -Werror
+	WERROR = #-Werror
 endif
 
 COMPILER_FLAGS += -mcmodel=medany

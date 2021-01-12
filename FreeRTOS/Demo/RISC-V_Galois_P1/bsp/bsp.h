@@ -181,13 +181,15 @@ void external_interrupt_handler(HANDLER_DATATYPE cause);
 /**
  * IIC Defines
  */
-#define XPAR_XIIC_NUM_INSTANCES 1
-
+#ifndef BSP_USE_IIC0
 #if __riscv_xlen == 64
 #define BSP_USE_IIC0 0
 #else
 #define BSP_USE_IIC0 1
 #endif
+#endif /* ifndef BSP_USE_IIC0 */
+
+#define XPAR_XIIC_NUM_INSTANCES 1
 #define XPAR_IIC_0_DEVICE_ID 0
 #define XPAR_IIC_0_BASEADDR (0x62310000ULL)
 #define XPAR_IIC_0_TEN_BIT_ADR 0
