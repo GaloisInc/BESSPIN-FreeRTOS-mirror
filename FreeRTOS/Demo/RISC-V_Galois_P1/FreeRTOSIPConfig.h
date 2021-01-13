@@ -179,7 +179,12 @@ not set to 1 then only FreeRTOS_indet_addr_quick() is available. */
 are available to the IP stack.  The total number of network buffers is limited
 to ensure the total amount of RAM that can be consumed by the IP stack is capped
 to a pre-determinable value. */
-#define ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS		60
+// @mpodhradsky this number is a guestimate: 600*~1024=600kb
+// We have 8MB heap, so there is a plenty of space.
+// The real problem is the network stack not clearing the descriptors for the incoming
+// packets *before* it is fully initialized.
+// As a result, bringig up FreeRTOS on a network with heavy traffic is challenging
+#define ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS		600
 
 /* A FreeRTOS queue is used to send events from application tasks to the IP
 stack.  ipconfigEVENT_QUEUE_LENGTH sets the maximum number of events that can
@@ -344,23 +349,23 @@ to 1 but a DNS server cannot be contacted.*/
 
 /* The UDP port to which print messages are sent. */
 #define configPRINT_PORT	( 45000 )
-/*
-#define ipSTACK_TX_EVENT 42 // TODO: ???
-#define iptraceNETWORK_INTERFACE_TRANSMIT() FreeRTOS_debug_printf( ("iptraceNETWORK_INTERFACE_TRANSMIT\r\n"));
-#define iptraceETHERNET_RX_EVENT_LOST()     FreeRTOS_debug_printf( ("iptraceETHERNET_RX_EVENT_LOST\r\n"));
-#define iptraceNETWORK_INTERFACE_RECEIVE()  FreeRTOS_debug_printf( ("iptraceNETWORK_INTERFACE_RECEIVE\r\n"));
-#define iptraceNO_BUFFER_FOR_SENDTO() 		FreeRTOS_debug_printf( ("iptraceNO_BUFFER_FOR_SENDTO\r\n"));
-#define iptraceSENDTO_SOCKET_NOT_BOUND() 	FreeRTOS_debug_printf( ("iptraceSENDTO_SOCKET_NOT_BOUND\r\n"));
-#define iptraceSENDTO_DATA_TOO_LONG() 		FreeRTOS_debug_printf( ("iptraceSENDTO_DATA_TOO_LONG\r\n"));
-#define iptraceSTACK_TX_EVENT_LOST(_X)		FreeRTOS_debug_printf( ("iptraceSTACK_TX_EVENT_LOST: %u\r\n",_X));
-#define iptraceIP_TASK_STARTING() 			FreeRTOS_debug_printf( ("iptraceIP_TASK_STARTING\r\n"));
-#define ipconfigWATCHDOG_TIMER()			FreeRTOS_debug_printf( ("ipconfigWATCHDOG_TIMER\r\n"));
-#define iptraceNETWORK_EVENT_RECEIVED(_X)	FreeRTOS_debug_printf( ("iptraceNETWORK_EVENT_RECEIVED: %i\r\n",_X));
-#define iptraceSENDING_UDP_PACKET(_X)		FreeRTOS_debug_printf( ("iptraceSENDING_UDP_PACKET: addrs = %lx\r\n",_X));
+
+// #define ipSTACK_TX_EVENT 42 // TODO: ???
+// #define iptraceNETWORK_INTERFACE_TRANSMIT() FreeRTOS_debug_printf( ("iptraceNETWORK_INTERFACE_TRANSMIT\r\n"));
+// #define iptraceETHERNET_RX_EVENT_LOST()     FreeRTOS_debug_printf( ("iptraceETHERNET_RX_EVENT_LOST\r\n"));
+// #define iptraceNETWORK_INTERFACE_RECEIVE()  FreeRTOS_debug_printf( ("iptraceNETWORK_INTERFACE_RECEIVE\r\n"));
+// #define iptraceNO_BUFFER_FOR_SENDTO() 		FreeRTOS_debug_printf( ("iptraceNO_BUFFER_FOR_SENDTO\r\n"));
+// #define iptraceSENDTO_SOCKET_NOT_BOUND() 	FreeRTOS_debug_printf( ("iptraceSENDTO_SOCKET_NOT_BOUND\r\n"));
+// #define iptraceSENDTO_DATA_TOO_LONG() 		FreeRTOS_debug_printf( ("iptraceSENDTO_DATA_TOO_LONG\r\n"));
+// #define iptraceSTACK_TX_EVENT_LOST(_X)		FreeRTOS_debug_printf( ("iptraceSTACK_TX_EVENT_LOST: %u\r\n",_X));
+// #define iptraceIP_TASK_STARTING() 			FreeRTOS_debug_printf( ("iptraceIP_TASK_STARTING\r\n"));
+// #define ipconfigWATCHDOG_TIMER()			FreeRTOS_debug_printf( ("ipconfigWATCHDOG_TIMER\r\n"));
+// #define iptraceNETWORK_EVENT_RECEIVED(_X)	FreeRTOS_debug_printf( ("iptraceNETWORK_EVENT_RECEIVED: %i\r\n",_X));
+// #define iptraceSENDING_UDP_PACKET(_X)		FreeRTOS_debug_printf( ("iptraceSENDING_UDP_PACKET: addrs = %lx\r\n",_X));
 #define iptraceFAILED_TO_OBTAIN_NETWORK_BUFFER() FreeRTOS_debug_printf( ("iptraceFAILED_TO_OBTAIN_NETWORK_BUFFER\r\n"));
-#define iptraceNETWORK_BUFFER_OBTAINED(_BUF) FreeRTOS_debug_printf( ("iptraceNETWORK_BUFFER_OBTAINED: %p (%p)\r\n", _BUF, _BUF->pucEthernetBuffer) );
-#define iptraceNETWORK_BUFFER_RELEASED(_BUF) FreeRTOS_debug_printf( ("iptraceNETWORK_BUFFER_RELEASED: %p (%p)\r\n", _BUF, _BUF->pucEthernetBuffer) );
-*/
+//#define iptraceNETWORK_BUFFER_OBTAINED(_BUF) FreeRTOS_debug_printf( ("iptraceNETWORK_BUFFER_OBTAINED: %p (%p)\r\n", _BUF, _BUF->pucEthernetBuffer) );
+//#define iptraceNETWORK_BUFFER_RELEASED(_BUF) FreeRTOS_debug_printf( ("iptraceNETWORK_BUFFER_RELEASED: %p (%p)\r\n", _BUF, _BUF->pucEthernetBuffer) );
+
 #define ipconfigCHECK_IP_QUEUE_SPACE 1
 #define ipconfigTCP_IP_SANITY 1
 

@@ -159,6 +159,12 @@ int PhyLinkStatus(XAxiEthernet *AxiEthernetInstancePtr) {
 
 int AxiEtherentConfigureTIPhy(XAxiEthernet *AxiEthernetInstancePtr, u32 PhyAddr)
 {
+	printf("AxiEthernetMAC[0] = %#X\r\n", AxiEthernetMAC[0]);
+	printf("AxiEthernetMAC[1] = %#X\r\n", AxiEthernetMAC[1]);
+	printf("AxiEthernetMAC[2] = %#X\r\n", AxiEthernetMAC[2]);
+	printf("AxiEthernetMAC[3] = %#X\r\n", AxiEthernetMAC[3]);
+	printf("AxiEthernetMAC[4] = %#X\r\n", AxiEthernetMAC[4]);
+	printf("AxiEthernetMAC[5] = %#X\r\n", AxiEthernetMAC[5]);
 	u16 PhyReg5;
 	u16 PhyRegCfg4;
 	u16 Speed;
