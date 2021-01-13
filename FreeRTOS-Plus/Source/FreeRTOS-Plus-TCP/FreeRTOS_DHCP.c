@@ -808,7 +808,7 @@ const uint32_t ulMandatoryOptions = 2ul; /* DHCP server address, and the correct
 				{
 					/* HT:endian: used to be network order */
 					xDHCPData.ulOfferedIPAddress = pxDHCPMessage->ulYourIPAddress_yiaddr;
-					FreeRTOS_printf( ( "vDHCPProcess: offer %lxip\n", FreeRTOS_ntohl( xDHCPData.ulOfferedIPAddress ) ) );
+					FreeRTOS_printf( ( "vDHCPProcess: offer %xip\n", (uint32_t)FreeRTOS_ntohl( xDHCPData.ulOfferedIPAddress ) ) );
 					xReturn = pdPASS;
 				}
 			}
