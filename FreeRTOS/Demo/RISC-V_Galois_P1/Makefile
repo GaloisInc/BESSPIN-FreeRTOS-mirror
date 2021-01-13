@@ -32,7 +32,6 @@ ifeq ($(USE_CLANG),yes)
 	COMPILER_FLAGS = -mno-relax --sysroot=$(SYSROOT_DIR)
 	LINKER_FLAGS = -mno-relax --sysroot=$(SYSROOT_DIR) -fuse-ld=lld
 	LIBS	 =  -lc -lclang_rt.builtins-riscv$(XLEN)
-	WERROR =
 	ifeq ($(USE_MORPHEUS), yes)
 		LIBS	 =  -lc -L$(EMTD_PREFIX)/lib/clang/11.0.0/lib -lclang_rt.builtins-riscv$(XLEN)
 		COMPILER_FLAGS += \
@@ -53,8 +52,9 @@ else
 	COMPILER_FLAGS =
 	LINKER_FLAGS =
 	LIBS	 =  -lc -lgcc
-	WERROR = #-Werror
 endif
+
+WERROR ?= -Werror
 
 COMPILER_FLAGS += -mcmodel=medany
 
