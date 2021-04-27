@@ -1,3 +1,3 @@
 # FreeRTOS-mirror
 
-[![Build Status](https://travis-ci.org/GaloisInc/FreeRTOS-mirror.svg?branch=develop)](https://travis-ci.org/GaloisInc/FreeRTOS-mirror)
+The BESSPIN fork of the [FreeRTOS-mirror](https://github.com/coldnew/FreeRTOS-mirror) for GFE.
